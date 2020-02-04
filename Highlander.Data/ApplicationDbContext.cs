@@ -16,6 +16,7 @@ namespace Highlander.Data
         }
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<Artefact> Artefacts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
