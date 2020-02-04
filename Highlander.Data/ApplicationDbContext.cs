@@ -17,6 +17,12 @@ namespace Highlander.Data
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Artefact> Artefacts { get; set; }
+        public DbSet<Staff> Staff { get; set; }
+        public DbSet<UserCommercialContact> UserCommercialContacts { get; set; }
+        public DbSet<Volunteer> Volunteers { get; set; }
+        public DbSet<Donor> Donors { get; set; }
+        public DbSet<Decoration> Decorations { get; set; }
+        public DbSet<DonorArtefact> DonorArtefacts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

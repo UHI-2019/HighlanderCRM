@@ -16,7 +16,7 @@ namespace Highlander.Data.Models
         public string Forename { get; set; }
         public string Inital { get; set; }
         public string Surname { get; set; }
-        public int DecorationId { get; set; }
+        public virtual IEnumerable<Decoration> Decoration { get; set; }
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
         public string AddressLine3 { get; set; }
