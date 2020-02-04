@@ -1,0 +1,37 @@
+﻿@model RolesDetailsViewModel
+
+@{
+    ViewData["Title"] = Model.Role.Name;
+}
+
+<section class="pt-4">
+    <h1>Details</h1>
+</section>
+
+<section class="pt-4">
+    <dl>
+        <dt>Id</dt>
+        <dd>@Model.Role.Id</dd>
+
+        <dt>Name</dt>
+        <dd>@Model.Role.Name</dd>
+    </dl>
+</section>
+
+<section class="pt-4">
+    <h3>Users</h3>
+    @if (Model.Users.Any())
+    {
+        <ul>
+            @foreach (var item in Model.Users)
+            {
+                <li>@item.Email</li>
+            }
+        </ul>
+    }
+    else
+    { 
+        <p>No users with this role yet.</p>
+    }
+    <a asp-action="AddUser" asp-route-id="@Model.Role.Id">New User</a>
+</section>
