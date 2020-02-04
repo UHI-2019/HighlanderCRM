@@ -11,7 +11,7 @@ namespace Highlander.Data.Models
     }
 
     public class ApplicationUser : IdentityUser<int>
-    {        
+    {
         public string Title { get; set; }
         public string Forename { get; set; }
         public string Inital { get; set; }
