@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Highlander.Data.Models
 {
-    class MemberArchive
+    public class MemberArchive
     {
         public int Id { get; set; }
         public int MemberId { get; set; }
