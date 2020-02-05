@@ -8,9 +8,9 @@ namespace Highlander.Data.Models
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public virtual IEnumerable<EmergencyContact> EmergencyContacts { get; set; }
+        public int EmergencyContactId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime LeaveDate { get; set; }
-
+        public virtual IEnumerable<EmergencyContact> EmergencyContacts { get; set; }
     }
 }

@@ -7,8 +7,8 @@ namespace Highlander.Data.Models
     public class EmergencyContact
     {
         public int Id { get; set; }
-        public string name { get; set; }
-        public string telNo { get; set; }
-        public string relation { get; set; }
+        public string Name { get; set; }
+        public string TelNo { get; set; }
+        public string Relation { get; set; }
     }
 }

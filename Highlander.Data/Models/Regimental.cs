@@ -7,7 +7,8 @@ namespace Highlander.Data.Models
     public class Regimental
     {
         public int Id { get; set; }
-        public int userId { get; set; }
+        public int UserId { get; set; }
+        public int RegimentId { get; set; }
         public virtual IEnumerable<Regiment> Regiments { get; set; }
     }
 }
