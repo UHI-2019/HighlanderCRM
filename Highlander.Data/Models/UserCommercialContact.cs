@@ -9,6 +9,7 @@ namespace Highlander.Data.Models
         public int Id { get; set; }
         public int UserId { get; set; }
         public int CommercialContactId { get; set; }
-        public virtual IEnumerable<CommercialContact> CommercialContacts { get; set; }
+        public virtual CommercialContact CommercialContact { get; set; }
+        public virtual ApplicationUser User { get; set; }
     }
 }

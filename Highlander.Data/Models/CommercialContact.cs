@@ -10,7 +10,7 @@ namespace Highlander.Data.Models
         public string CompanyName { get; set; }
         public string CompanyAddress { get; set; }
         public int BusinessSectorId { get; set; }
-        public virtual IEnumerable<BusinessSector> BusinessSectors { get; set; }
-
+        public virtual BusinessSector BusinessSector { get; set; }
+        public virtual IEnumerable<UserCommercialContact> UserCommercialContacts { get; set; }
     }
 }

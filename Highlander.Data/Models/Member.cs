@@ -12,6 +12,7 @@ namespace Highlander.Data.Models
         public string Number { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime ExpiryDate { get; set; }
+        public virtual ApplicationUser ApplicationUser { get; set; }
         public virtual IEnumerable<MemberArchive> MembersArchives { get; set; }
     }
 }

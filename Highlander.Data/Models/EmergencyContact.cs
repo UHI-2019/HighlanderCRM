@@ -10,5 +10,7 @@ namespace Highlander.Data.Models
         public string Name { get; set; }
         public string TelNo { get; set; }
         public string Relation { get; set; }
+        public virtual IEnumerable<Staff> Staff {get; set; }
+        public virtual IEnumerable<Volunteer> Volunteers { get; set; }
     }
 }

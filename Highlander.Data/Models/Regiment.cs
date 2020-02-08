@@ -7,6 +7,7 @@ namespace Highlander.Data.Models
     public class Regiment
     {
         public int Id { get; set; }
-        public string name { get; set; }
+        public string Name { get; set; }
+        public IEnumerable<Regimental> Regimentals { get; set; }
     }
 }

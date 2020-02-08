@@ -12,6 +12,6 @@ namespace Highlander.Data.Models
         public string Number { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime ExpiryDate { get; set; }
-
+        public Member Member { get; set; }
     }
 }

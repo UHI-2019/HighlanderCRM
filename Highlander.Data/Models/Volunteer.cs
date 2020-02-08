@@ -10,7 +10,7 @@ namespace Highlander.Data.Models
         public int UserId { get; set; }        
         public int ExpertiseId { get; set; }
         public int EmergencyContactId { get; set; }
-        public virtual IEnumerable<Expertise> Expertises { get; set; }
-        public virtual IEnumerable<EmergencyContact> EmergencyContacts { get; set; }
+        public virtual Expertise Expertise { get; set; }
+        public virtual EmergencyContact EmergencyContact { get; set; }
     }
 }

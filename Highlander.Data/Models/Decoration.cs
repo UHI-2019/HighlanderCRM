@@ -8,5 +8,6 @@ namespace Highlander.Data.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public IEnumerable<ApplicationUser> Users { get; set; }
     }
 }
