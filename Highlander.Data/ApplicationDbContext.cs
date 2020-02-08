@@ -32,9 +32,6 @@ namespace Highlander.Data
         public DbSet<UserCommercialContact> UserCommercialContacts { get; set; }
         public DbSet<Volunteer> Volunteers { get; set; }
         
-        
-        
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -74,7 +71,6 @@ namespace Highlander.Data
                     .HasForeignKey(ur => ur.RoleId)
                     .IsRequired();
             });
-
         }
     }
 }
