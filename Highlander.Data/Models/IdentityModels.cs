@@ -16,7 +16,6 @@ namespace Highlander.Data.Models
         public string Forename { get; set; }
         public string Inital { get; set; }
         public string Surname { get; set; }
-        public int DecorationId { get; set; }
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
         public string AddressLine3 { get; set; }
@@ -28,7 +27,13 @@ namespace Highlander.Data.Models
         public string PersonalEmail { get; set; }
         public string WorkEmail { get; set; }
         public bool IsNewsletterSubscriber { get; set; }
-
+        public virtual Staff Staff { get; set; }
+        public virtual Regimental Regimental { get; set; }
+        public virtual Volunteer Volunteer { get; set; }
+        public virtual Member Member { get; set; }
+        public virtual Donor Donor { get; set; }
+        public virtual Decoration Decoration { get; set; }
+        public virtual IEnumerable<UserCommercialContact> UserCommercialContacts { get; set; }
         public virtual ICollection<IdentityUserClaim<int>> Claims { get; set; }
         public virtual ICollection<IdentityUserLogin<int>> Logins { get; set; }
         public virtual ICollection<IdentityUserToken<int>> Tokens { get; set; }

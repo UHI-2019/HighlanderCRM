@@ -24,7 +24,7 @@ namespace Highlander.Web.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Volunteer")]
+        [Authorize(Roles = "Superuser")]
         public IActionResult Privacy()
         {
             var user = _context.Users

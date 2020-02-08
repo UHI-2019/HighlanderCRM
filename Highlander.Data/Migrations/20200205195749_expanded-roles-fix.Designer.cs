@@ -3,14 +3,16 @@ using System;
 using Highlander.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Highlander.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200205195749_expanded-roles-fix")]
+    partial class expandedrolesfix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,9 +73,6 @@ namespace Highlander.Data.Migrations
 
                     b.Property<string>("County")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<int?>("DecorationId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
@@ -142,15 +141,10 @@ namespace Highlander.Data.Migrations
                         .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
 
-                    b.Property<int?>("VolunteerId")
-                        .HasColumnType("int");
-
                     b.Property<string>("WorkEmail")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DecorationId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -158,8 +152,6 @@ namespace Highlander.Data.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasName("UserNameIndex");
-
-                    b.HasIndex("VolunteerId");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -208,12 +200,17 @@ namespace Highlander.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<int?>("CommercialContactId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
-                    b.ToTable("BusinessSectors");
+                    b.HasIndex("CommercialContactId");
+
+                    b.ToTable("BusinessSector");
                 });
 
             modelBuilder.Entity("Highlander.Data.Models.CommercialContact", b =>
@@ -231,11 +228,14 @@ namespace Highlander.Data.Migrations
                     b.Property<string>("CompanyName")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<int?>("UserCommercialContactId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("BusinessSectorId");
+                    b.HasIndex("UserCommercialContactId");
 
-                    b.ToTable("CommercialContacts");
+                    b.ToTable("CommercialContact");
                 });
 
             modelBuilder.Entity("Highlander.Data.Models.Decoration", b =>
@@ -244,10 +244,15 @@ namespace Highlander.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<int?>("ApplicationUserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("Decorations");
                 });
@@ -263,9 +268,6 @@ namespace Highlander.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
                     b.ToTable("Donors");
                 });
 
@@ -275,9 +277,6 @@ namespace Highlander.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("ArtefactId")
-                        .HasColumnType("int");
-
                     b.Property<int>("DonorId")
                         .HasColumnType("int");
 
@@ -285,10 +284,6 @@ namespace Highlander.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ArtefactId");
-
-                    b.HasIndex("DonorId");
 
                     b.ToTable("DonorArtefacts");
                 });
@@ -305,12 +300,22 @@ namespace Highlander.Data.Migrations
                     b.Property<string>("Relation")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<int?>("StaffId")
+                        .HasColumnType("int");
+
                     b.Property<string>("TelNo")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<int?>("VolunteerId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.ToTable("EmergencyContacts");
+                    b.HasIndex("StaffId");
+
+                    b.HasIndex("VolunteerId");
+
+                    b.ToTable("EmergencyContact");
                 });
 
             modelBuilder.Entity("Highlander.Data.Models.Expertise", b =>
@@ -322,102 +327,14 @@ namespace Highlander.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("Expertises");
-                });
-
-            modelBuilder.Entity("Highlander.Data.Models.Member", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ExpiryDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Number")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Type")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<int>("UserId")
+                    b.Property<int?>("VolunteerId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("VolunteerId");
 
-                    b.ToTable("Members");
-                });
-
-            modelBuilder.Entity("Highlander.Data.Models.MemberArchive", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ExpiryDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("MemberId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Number")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MemberId");
-
-                    b.ToTable("MemberArchives");
-                });
-
-            modelBuilder.Entity("Highlander.Data.Models.Regiment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Regiments");
-                });
-
-            modelBuilder.Entity("Highlander.Data.Models.Regimental", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("RegimentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RegimentId");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("Regimentals");
+                    b.ToTable("Expertise");
                 });
 
             modelBuilder.Entity("Highlander.Data.Models.Staff", b =>
@@ -440,11 +357,6 @@ namespace Highlander.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmergencyContactId");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
                     b.ToTable("Staff");
                 });
 
@@ -461,10 +373,6 @@ namespace Highlander.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CommercialContactId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("UserCommercialContacts");
                 });
@@ -485,10 +393,6 @@ namespace Highlander.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EmergencyContactId");
-
-                    b.HasIndex("ExpertiseId");
 
                     b.ToTable("Volunteers");
                 });
@@ -581,17 +485,6 @@ namespace Highlander.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Highlander.Data.Models.ApplicationUser", b =>
-                {
-                    b.HasOne("Highlander.Data.Models.Decoration", "Decoration")
-                        .WithMany("Users")
-                        .HasForeignKey("DecorationId");
-
-                    b.HasOne("Highlander.Data.Models.Volunteer", "Volunteer")
-                        .WithMany()
-                        .HasForeignKey("VolunteerId");
-                });
-
             modelBuilder.Entity("Highlander.Data.Models.ApplicationUserRole", b =>
                 {
                     b.HasOne("Highlander.Data.Models.ApplicationRole", "Role")
@@ -607,113 +500,43 @@ namespace Highlander.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Highlander.Data.Models.BusinessSector", b =>
+                {
+                    b.HasOne("Highlander.Data.Models.CommercialContact", null)
+                        .WithMany("BusinessSectors")
+                        .HasForeignKey("CommercialContactId");
+                });
+
             modelBuilder.Entity("Highlander.Data.Models.CommercialContact", b =>
                 {
-                    b.HasOne("Highlander.Data.Models.BusinessSector", "BusinessSector")
+                    b.HasOne("Highlander.Data.Models.UserCommercialContact", null)
                         .WithMany("CommercialContacts")
-                        .HasForeignKey("BusinessSectorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserCommercialContactId");
                 });
 
-            modelBuilder.Entity("Highlander.Data.Models.Donor", b =>
+            modelBuilder.Entity("Highlander.Data.Models.Decoration", b =>
                 {
-                    b.HasOne("Highlander.Data.Models.ApplicationUser", "User")
-                        .WithOne("Donor")
-                        .HasForeignKey("Highlander.Data.Models.Donor", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Highlander.Data.Models.ApplicationUser", null)
+                        .WithMany("Decoration")
+                        .HasForeignKey("ApplicationUserId");
                 });
 
-            modelBuilder.Entity("Highlander.Data.Models.DonorArtefact", b =>
+            modelBuilder.Entity("Highlander.Data.Models.EmergencyContact", b =>
                 {
-                    b.HasOne("Highlander.Data.Models.Artefact", "Artefact")
-                        .WithMany("DonorArtefacts")
-                        .HasForeignKey("ArtefactId");
+                    b.HasOne("Highlander.Data.Models.Staff", null)
+                        .WithMany("EmergencyContacts")
+                        .HasForeignKey("StaffId");
 
-                    b.HasOne("Highlander.Data.Models.Donor", "Donor")
-                        .WithMany("DonorArtefacts")
-                        .HasForeignKey("DonorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Highlander.Data.Models.Volunteer", null)
+                        .WithMany("EmergencyContacts")
+                        .HasForeignKey("VolunteerId");
                 });
 
-            modelBuilder.Entity("Highlander.Data.Models.Member", b =>
+            modelBuilder.Entity("Highlander.Data.Models.Expertise", b =>
                 {
-                    b.HasOne("Highlander.Data.Models.ApplicationUser", "User")
-                        .WithOne("Member")
-                        .HasForeignKey("Highlander.Data.Models.Member", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Highlander.Data.Models.MemberArchive", b =>
-                {
-                    b.HasOne("Highlander.Data.Models.Member", "Member")
-                        .WithMany("MembersArchives")
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Highlander.Data.Models.Regimental", b =>
-                {
-                    b.HasOne("Highlander.Data.Models.Regiment", "Regiment")
-                        .WithMany("Regimentals")
-                        .HasForeignKey("RegimentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Highlander.Data.Models.ApplicationUser", "User")
-                        .WithOne("Regimental")
-                        .HasForeignKey("Highlander.Data.Models.Regimental", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Highlander.Data.Models.Staff", b =>
-                {
-                    b.HasOne("Highlander.Data.Models.EmergencyContact", "EmergencyContact")
-                        .WithMany("Staff")
-                        .HasForeignKey("EmergencyContactId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Highlander.Data.Models.ApplicationUser", "User")
-                        .WithOne("Staff")
-                        .HasForeignKey("Highlander.Data.Models.Staff", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Highlander.Data.Models.UserCommercialContact", b =>
-                {
-                    b.HasOne("Highlander.Data.Models.CommercialContact", "CommercialContact")
-                        .WithMany("UserCommercialContacts")
-                        .HasForeignKey("CommercialContactId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Highlander.Data.Models.ApplicationUser", "User")
-                        .WithMany("UserCommercialContacts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Highlander.Data.Models.Volunteer", b =>
-                {
-                    b.HasOne("Highlander.Data.Models.EmergencyContact", "EmergencyContact")
-                        .WithMany("Volunteers")
-                        .HasForeignKey("EmergencyContactId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Highlander.Data.Models.Expertise", "Expertise")
-                        .WithMany("Volunteers")
-                        .HasForeignKey("ExpertiseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Highlander.Data.Models.Volunteer", null)
+                        .WithMany("Expertises")
+                        .HasForeignKey("VolunteerId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

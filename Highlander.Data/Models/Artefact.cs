@@ -11,5 +11,8 @@ namespace Highlander.Data.Models
         public string AccessionNumber { get; set; }
         public DateTime DateAccessioned { get; set; }
         public string AdlibReference { get; set; }
+
+        // can an Artefact have mutliple donors?
+        public virtual IEnumerable<DonorArtefact> DonorArtefacts { get; set; }
     }
 }

@@ -17,7 +17,21 @@ namespace Highlander.Data
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Artefact> Artefacts { get; set; }
-
+        public DbSet<BusinessSector> BusinessSectors { get; set; }
+        public DbSet<CommercialContact> CommercialContacts { get; set; }
+        public DbSet<Decoration> Decorations { get; set; }
+        public DbSet<Donor> Donors { get; set; }
+        public DbSet<DonorArtefact> DonorArtefacts { get; set; }
+        public DbSet<EmergencyContact> EmergencyContacts { get; set; }
+        public DbSet<Expertise> Expertises { get; set; }
+        public DbSet<Member> Members { get; set; }
+        public DbSet<MemberArchive> MemberArchives { get; set; }
+        public DbSet<Regiment> Regiments { get; set; }
+        public DbSet<Regimental> Regimentals { get; set; }
+        public DbSet<Staff> Staff { get; set; }
+        public DbSet<UserCommercialContact> UserCommercialContacts { get; set; }
+        public DbSet<Volunteer> Volunteers { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -57,7 +71,6 @@ namespace Highlander.Data
                     .HasForeignKey(ur => ur.RoleId)
                     .IsRequired();
             });
-
         }
     }
 }
