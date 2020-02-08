@@ -8,6 +8,6 @@ namespace Highlander.Data.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public IEnumerable<CommercialContact> CommercialContacts { get; set; }
+        public virtual IEnumerable<CommercialContact> CommercialContacts { get; set; }
     }
 }
