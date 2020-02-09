@@ -71,6 +71,26 @@ namespace Highlander.Data
                     .HasForeignKey(ur => ur.RoleId)
                     .IsRequired();
             });
+
+            modelBuilder.Entity<Decoration>(e =>
+            {
+                e.HasData(new Decoration() { Id = 1, Name = "BA" });
+                e.HasData(new Decoration() { Id = 2, Name = "BSc" });
+                e.HasData(new Decoration() { Id = 3, Name = "MA" });
+                e.HasData(new Decoration() { Id = 4, Name = "PGDip" });
+                e.HasData(new Decoration() { Id = 5, Name = "PGCert" });
+            });
+
+            modelBuilder.Entity<ApplicationRole>(e =>
+            {
+                e.HasData(new ApplicationRole() { Id = 1, Name = "Superuser" });
+                e.HasData(new ApplicationRole() { Id = 2, Name = "Administrator" });
+                e.HasData(new ApplicationRole() { Id = 3, Name = "Staff" });
+                e.HasData(new ApplicationRole() { Id = 4, Name = "Volunteer" });
+                e.HasData(new ApplicationRole() { Id = 5, Name = "Donor" });
+                e.HasData(new ApplicationRole() { Id = 6, Name = "Member" });
+                e.HasData(new ApplicationRole() { Id = 7, Name = "Regimental" });
+            });
         }
     }
 }
