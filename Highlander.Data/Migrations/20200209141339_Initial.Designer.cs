@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Highlander.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200208170832_AddBranchExpandedModelsTables")]
-    partial class AddBranchExpandedModelsTables
+    [Migration("20200209141339_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -44,6 +44,50 @@ namespace Highlander.Data.Migrations
                         .HasName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ConcurrencyStamp = "f66ca4a0-43e6-4724-8294-e202595489da",
+                            Name = "Superuser"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ConcurrencyStamp = "7d8de5d1-c26e-4254-a95c-6d6919e56386",
+                            Name = "Administrator"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ConcurrencyStamp = "bbfca5c7-1300-44d5-a929-328805e9f58e",
+                            Name = "Staff"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ConcurrencyStamp = "3b4b0f87-2ea2-496d-ab62-7246a90a52e1",
+                            Name = "Volunteer"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ConcurrencyStamp = "7efdcb15-bec7-41fb-82e1-05cd81132446",
+                            Name = "Donor"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            ConcurrencyStamp = "204bf62d-6668-4e0f-a5a1-9234cc4e621e",
+                            Name = "Member"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            ConcurrencyStamp = "a7cd1329-d712-4115-8242-26fd458f3211",
+                            Name = "Regimental"
+                        });
                 });
 
             modelBuilder.Entity("Highlander.Data.Models.ApplicationUser", b =>
@@ -74,7 +118,7 @@ namespace Highlander.Data.Migrations
                     b.Property<string>("County")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int?>("DecorationId")
+                    b.Property<int>("DecorationId")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -87,14 +131,11 @@ namespace Highlander.Data.Migrations
                     b.Property<string>("Forename")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Inital")
+                    b.Property<string>("Initial")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<bool>("IsNewsletterSubscriber")
                         .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("LandlineTelNo")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");
@@ -114,9 +155,6 @@ namespace Highlander.Data.Migrations
                         .HasMaxLength(256);
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("PersonalEmail")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("PhoneNumber")
@@ -144,9 +182,6 @@ namespace Highlander.Data.Migrations
                         .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
 
-                    b.Property<int?>("VolunteerId")
-                        .HasColumnType("int");
-
                     b.Property<string>("WorkEmail")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -160,8 +195,6 @@ namespace Highlander.Data.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasName("UserNameIndex");
-
-                    b.HasIndex("VolunteerId");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -252,6 +285,33 @@ namespace Highlander.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Decorations");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "BA"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "BSc"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "MA"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "PGDip"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "PGCert"
+                        });
                 });
 
             modelBuilder.Entity("Highlander.Data.Models.Donor", b =>
@@ -492,6 +552,9 @@ namespace Highlander.Data.Migrations
 
                     b.HasIndex("ExpertiseId");
 
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
                     b.ToTable("Volunteers");
                 });
 
@@ -587,11 +650,9 @@ namespace Highlander.Data.Migrations
                 {
                     b.HasOne("Highlander.Data.Models.Decoration", "Decoration")
                         .WithMany("Users")
-                        .HasForeignKey("DecorationId");
-
-                    b.HasOne("Highlander.Data.Models.Volunteer", "Volunteer")
-                        .WithMany()
-                        .HasForeignKey("VolunteerId");
+                        .HasForeignKey("DecorationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Highlander.Data.Models.ApplicationUserRole", b =>
@@ -714,6 +775,12 @@ namespace Highlander.Data.Migrations
                     b.HasOne("Highlander.Data.Models.Expertise", "Expertise")
                         .WithMany("Volunteers")
                         .HasForeignKey("ExpertiseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Highlander.Data.Models.ApplicationUser", "User")
+                        .WithOne("Volunteer")
+                        .HasForeignKey("Highlander.Data.Models.Volunteer", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
