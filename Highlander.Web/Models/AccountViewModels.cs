@@ -1,14 +1,12 @@
-﻿using Highlander.Data.Models;
+﻿using System;
+using Highlander.Data.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Highlander.Web.Models
 {
-    public class RegisterViewModel
+    public class RegisterAccountViewModel
     {
         public int TitleId { get; set; }
         public string Forename { get; set; }
@@ -31,6 +29,25 @@ namespace Highlander.Web.Models
 
         public IEnumerable<SelectListItem> Titles { get; set; }
         public IEnumerable<SelectListItem> Decorations { get; set; }
+    }
+
+    public class EditAccountViewModel
+    {
+        public ApplicationUser User { get; set; }
+        public int TitleId { get; set; }
+        public int DecorationId { get; set; }
+        public IEnumerable<SelectListItem> Titles { get; set; }
+        public IEnumerable<SelectListItem> Decorations { get; set; }
+    }
+
+    public class PhoneNumbersViewModel
+    {
+        public ApplicationUser User { get; set; }
+    }
+
+    public class EmailsViewModel
+    {
+        public ApplicationUser User { get; set; }
     }
 
     public class Title

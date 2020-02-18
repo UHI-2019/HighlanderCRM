@@ -1,0 +1,44 @@
+﻿@model EmailsViewModel
+@{
+    ViewBag.Title = "Manage Emails";
+    ViewBag.Code = "E";
+}
+
+<h2>Manage your account</h2>
+<h4>Change your account settings</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-3">
+        <partial name="_AccountPills" />
+    </div>
+    <div class="col-md-9">
+        <div class="alert alert-info" role="alert">
+            Altering your Email will log you out!
+        </div>
+        <h4 class="mb-4">Emails</h4>
+        <form method="post" asp-controller="Account" asp-action="StoreEmails">
+            <div asp-validation-summary="ModelOnly"></div>
+
+            <input type="hidden" asp-for="@Model.User.Id" />
+
+
+            <div class="form-group">
+                <label asp-for="@Model.User.Email">Email</label>
+                <input asp-for="@Model.User.Email" class="form-control" />
+                <span asp-validation-for="@Model.User.Email"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="@Model.User.WorkEmail">Work Email</label>
+                <input asp-for="@Model.User.WorkEmail" class="form-control" />
+                <span asp-validation-for="@Model.User.WorkEmail"></span>
+            </div>
+
+            <div>
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+
+        </form>
+    </div>
+</div>
