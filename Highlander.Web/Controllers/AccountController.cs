@@ -1,13 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CsvHelper;
 using Highlander.Data;
 using Highlander.Data.Models;
 using Highlander.Web.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Highlander.Web.Controllers
 {
@@ -96,6 +100,32 @@ namespace Highlander.Web.Controllers
         }
 
         [HttpGet]
+        public IActionResult Login(string ReturnUrl)
+        {
+            var model = new LoginViewModel() { ReturnUrl = ReturnUrl };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            var result = await _signManager.PasswordSignInAsync(model.Username, model.Password, false, false);
+
+            if (result.Succeeded)
+            {
+                if (model.ReturnUrl != null)
+                {
+                    return Redirect(model.ReturnUrl);
+                }
+            }
+            else if (result.IsLockedOut)
+            { 
+                // add recovery logic
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Manage()
         {
             var model = new EditAccountViewModel()
@@ -173,14 +203,103 @@ namespace Highlander.Web.Controllers
         [Route("Account/Manage/PersonalData")]
         public async Task<IActionResult> PersonalData()
         {
-            var model = new PhoneNumbersViewModel()
-            {
-                User = await _userManager.GetUserAsync(this.User)
-            };
-
-            // let user download personal data as csv
-
             return View();
+        }
+
+        [HttpGet]
+        [Route("Account/Manage/DownloadPersonalData")]
+        public async Task<FileStreamResult> DownloadPersonalData()
+        {
+            // get user
+            var user = await _userManager.GetUserAsync(this.User);
+            var applicationUser = _context.Users
+                .Include(x => x.Member)
+                .Include(x => x.Staff)
+                    .ThenInclude(staff => staff.EmergencyContact)
+                .Include(x => x.Decoration)
+                .Include(x => x.Regimental)
+                    .ThenInclude(regimental => regimental.Regiment)
+                .Include(x => x.Volunteer)
+                    .ThenInclude(volunteer => volunteer.Expertise)
+                .FirstOrDefault(x => x.Id == user.Id);
+
+            // dynamically create a user to be downloaded as a CSV
+            dynamic displayUser = new ExpandoObject();
+
+            displayUser.Title = applicationUser.Title;
+            displayUser.Forename = applicationUser.Forename;
+            displayUser.Initial = applicationUser.Initial;
+            displayUser.Surname = applicationUser.Surname;
+            displayUser.Decoration = applicationUser.Decoration.Name;
+            displayUser.AddressLine1 = applicationUser.AddressLine1;
+            displayUser.AddressLine2 = applicationUser.AddressLine2;
+            displayUser.AddressLine3 = applicationUser.AddressLine3;
+            displayUser.County = applicationUser.County;
+            displayUser.Country = applicationUser.Country;
+            displayUser.Postcode = applicationUser.Postcode;
+            displayUser.PhoneNumber = applicationUser.PhoneNumber;
+            displayUser.MobileTelNo = applicationUser.MobileTelNo;
+            displayUser.Email = applicationUser.Email;
+            displayUser.WorkEmail = applicationUser.WorkEmail;
+            displayUser.SubscribedToNewsLetter = applicationUser.IsNewsletterSubscriber ? "Yes" : "No";
+            
+            if (applicationUser.Member != null)
+            {
+                displayUser.MemberType = applicationUser.Member.Type;
+                displayUser.MemberNumber = applicationUser.Member.Number;
+                displayUser.MemberStartDate = applicationUser.Member.StartDate;
+                displayUser.MemberExpiryDate = applicationUser.Member.ExpiryDate;
+            }
+
+            if (applicationUser.Staff != null)
+            {
+                displayUser.EmergencyContactName = applicationUser.Staff.EmergencyContact.Name;
+                displayUser.EmergencyContactRelation = applicationUser.Staff.EmergencyContact.Relation;
+                displayUser.EmergencyContactTelNo = applicationUser.Staff.EmergencyContact.TelNo;
+                displayUser.StartOfEmployment = applicationUser.Staff.StartDate;
+                displayUser.EndOfEmployment = applicationUser.Staff.LeaveDate;
+            }
+
+            if (applicationUser.Regimental != null)
+            {
+                displayUser.Regiment = applicationUser.Regimental.Regiment.Name;
+            }
+
+            if (applicationUser.Volunteer != null)
+            {
+                // if they are staff this will overwrite the already set EmergencyContact so it wont be repeated
+                // might be worth moving emergency contact from both Staff and Volunteer and having it in User
+                displayUser.EmergencyContactName = applicationUser.Volunteer.EmergencyContact.Name;
+                displayUser.EmergencyContactRelation = applicationUser.Volunteer.EmergencyContact.Relation;
+                displayUser.EmergencyContactTelNo = applicationUser.Volunteer.EmergencyContact.TelNo;
+
+                displayUser.Expertise = applicationUser.Volunteer.Expertise.Name;
+            }
+
+            // return a csv file of the current users 'user' record and any extra roles
+            var result = this.WriteCsvToMemory(displayUser);
+            var memoryStream = new MemoryStream(result);
+            return new FileStreamResult(memoryStream, "text/csv") { FileDownloadName = "export.csv" };
+        }
+
+        /**
+         * Move to own helper class? If we need to use it again
+         */
+        public byte[] WriteCsvToMemory(dynamic record) 
+        {
+            using (var memoryStream = new MemoryStream())
+            using (var streamWriter = new StreamWriter(memoryStream))
+            using (var csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture))
+            {
+
+                var records = new List<dynamic>();
+                records.Add(record);
+
+                csvWriter.WriteRecords(records);
+
+                streamWriter.Flush();
+                return memoryStream.ToArray();
+            }
         }
 
         [HttpGet]
