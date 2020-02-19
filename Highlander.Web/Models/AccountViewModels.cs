@@ -50,6 +50,13 @@ namespace Highlander.Web.Models
         public ApplicationUser User { get; set; }
     }
 
+    public class LoginViewModel
+    { 
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string ReturnUrl { get; set; }
+    }
+
     public class Title
     { 
         public int Id { get; set; }
