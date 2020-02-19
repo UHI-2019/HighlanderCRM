@@ -2,30 +2,48 @@
 @{
     ViewBag.Title = "Login";
 }
-<h1>Login</h1>
+    <div class="centered-div text-center mt-5">
+        <div class="jumbotron">
+            <img class="profile-img" id="logo-square" src="~/logos/logo_rect.png" alt="Logo CRM">
+            <form method="post" asp-controller="Account" asp-action="Login">
+                <div asp-validation-summary="ModelOnly"></div>
 
-<form method="post" asp-controller="Account" asp-action="Login">
-    <div asp-validation-summary="ModelOnly"></div>
+                <input type="hidden" asp-for="ReturnUrl" />
 
-    <input type="hidden" asp-for="ReturnUrl" />
+                <!--Input username-->
+                <div class="form-group">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="username_icon"><i class="fas fa-user"></i></span>
+                        </div>
+                        <input asp-for="Username" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="username_icon">
+                    </div>
+                    <!--label asp-for="Username"></label>
+                <input asp-for="Username" class="form-control" />-->
+                    <span asp-validation-for="Username"></span>
+                </div>
 
-    <div class="form-group">
-        <label asp-for="Username"></label>
-        <input asp-for="Username" class="form-control" />
-        <span asp-validation-for="Username"></span>
+                <!--Input password-->
+                <div class="form-group">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="password_icon"><i class="fas fa-lock"></i></span>
+                        </div>
+                        <input asp-for="Password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="password_icon">
+                    </div>
+                    <span asp-validation-for="Username"></span>
+                    <!--<label asp-for="Password"></label>
+                <input asp-for="Password" class="form-control" />-->
+                    <span asp-validation-for="Password"></span>
+                </div>
+
+                <div class="mt-2">
+                    <p>Don't have an account? <a asp-action="Register" asp-controller="Account">Register</a>.</p>
+                </div>
+
+                <div>
+                    <input type="submit" value="Login" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="Password"></label>
-        <input asp-for="Password" class="form-control" />
-        <span asp-validation-for="Password"></span>
-    </div>
-
-    <div class="mt-2">
-        <p>Don't have an account? <a asp-action="Register" asp-controller="Account">Register</a>.</p>
-    </div>
-
-    <div>
-        <input type="submit" value="Login" class="btn btn-primary" />
-    </div>
-</form>
