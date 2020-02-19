@@ -145,7 +145,7 @@ namespace Highlander.Web.Controllers
                 })
             };
             model.DecorationId = model.User.DecorationId;
-            model.TitleId = model.TitleId; // this is wrong - titleId isnt being set
+            model.TitleId = model.TitleId;
 
             return View(model);
         }
@@ -344,5 +344,29 @@ namespace Highlander.Web.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+
+        [HttpGet]
+        [Route("Account/Manage/Regimental")]
+        [Authorize(Roles = "Regimental")]
+        public async Task<IActionResult> Regimental()
+        {
+            var model = new RegimentalViewModel()
+            {
+                User = await _userManager.GetUserAsync(this.User)
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Regimental")]
+        public async Task<IActionResult> UpdateRegimental()
+        {
+
+            // update User.Regimental.Regiment
+
+            return View();
+        }
+
     }
 }

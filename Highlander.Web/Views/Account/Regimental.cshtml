@@ -1,0 +1,30 @@
+﻿@model RegimentalViewModel
+@{
+    ViewBag.Title = "Regimental Details";
+    ViewBag.Code = "R";
+}
+
+<h2>Manage your account</h2>
+<h4>Change your account settings</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-3">
+        <partial name="_AccountPills" />
+    </div>
+    <div class="col-md-9">
+        <h4 class="mb-4">Regimental Details</h4>
+        <form method="post" asp-controller="Account" asp-action="UpdateRegimental">
+            <div asp-validation-summary="ModelOnly"></div>
+
+            <input type="hidden" asp-for="@Model.User.Id" />
+
+            <!-- Select here: Regiment -->
+
+            <div>
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+
+        </form>
+    </div>
+</div>

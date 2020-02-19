@@ -4,4 +4,10 @@
     <li class="nav-item"><a class="nav-link @(ViewBag.Code == "E" ? "active" : "")" id="email" href="/Account/Manage/Emails">Emails</a></li>
     @*<li class="nav-item"><a class="nav-link @(ViewBag.Code == "PA" ? "active" : "")" id="change-password" href="/Identity/Account/Manage/ChangePassword">Password</a></li>*@
     <li class="nav-item"><a class="nav-link @(ViewBag.Code == "D" ? "active" : "")" id="personal-data" href="/Account/Manage/PersonalData">Personal data</a></li>
+    @if (User.IsInRole("Regimental"))
+    { 
+        <li class="nav-item">
+            <a class="nav-link @(ViewBag.Code == "R" ? "active" : "")" id="regimental-details" href="/Account/Manage/Regimental">Regimental</a>
+        </li>
+    }
 </ul>

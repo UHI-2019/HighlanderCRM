@@ -53,8 +53,15 @@ namespace Highlander.Web.Models
     public class LoginViewModel
     { 
         public string Username { get; set; }
+
+        [Required, DataType(DataType.Password)]
         public string Password { get; set; }
         public string ReturnUrl { get; set; }
+    }
+
+    public class RegimentalViewModel
+    {
+        public ApplicationUser User { get; set; }
     }
 
     public class Title
