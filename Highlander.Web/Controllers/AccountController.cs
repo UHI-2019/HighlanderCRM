@@ -2,6 +2,7 @@
 using Highlander.Data;
 using Highlander.Data.Models;
 using Highlander.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -126,6 +127,7 @@ namespace Highlander.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Manage()
         {
             var model = new EditAccountViewModel()
@@ -149,6 +151,7 @@ namespace Highlander.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Edit(EditAccountViewModel model)
         {
             var user = await _userManager.FindByIdAsync(model.User.Id.ToString());
@@ -175,6 +178,7 @@ namespace Highlander.Web.Controllers
 
         [HttpGet]
         [Route("Account/Manage/PhoneNumbers")]
+        [Authorize]
         public async Task<IActionResult> PhoneNumbers()
         {
             var model = new PhoneNumbersViewModel()
@@ -185,6 +189,7 @@ namespace Highlander.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> StorePhoneNumbers(PhoneNumbersViewModel model)
         {
             // persist phone numbers
@@ -200,6 +205,7 @@ namespace Highlander.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [Route("Account/Manage/PersonalData")]
         public async Task<IActionResult> PersonalData()
         {
@@ -207,6 +213,7 @@ namespace Highlander.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [Route("Account/Manage/DownloadPersonalData")]
         public async Task<FileStreamResult> DownloadPersonalData()
         {
@@ -304,6 +311,7 @@ namespace Highlander.Web.Controllers
 
         [HttpGet]
         [Route("Account/Manage/Emails")]
+        [Authorize]
         public async Task<IActionResult> Emails()
         {
             var model = new EmailsViewModel()
@@ -314,6 +322,7 @@ namespace Highlander.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> StoreEmails(EmailsViewModel model)
         {
             var user = await _userManager.FindByIdAsync(model.User.Id.ToString());

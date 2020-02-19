@@ -101,6 +101,10 @@
         <label class="form-check-label" asp-for="@Model.IsNewsletterSubscriber"></label>
     </div>
 
+    <div class="mt-2">
+        <p>Already have an account? <a asp-action="Login" asp-controller="Account">Login</a>.</p>
+    </div>
+
     <div>
         <input type="submit" value="Register" class="btn btn-primary" />
     </div>
