@@ -8,11 +8,24 @@
 </section>
 
 <section class="pt-4">
-        <form asp-action="AddUser" method="post" class="form-inline">
-            <input type="hidden" asp-for="RoleId" />
+    <form asp-action="AddUser" method="post">
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+
+        <input type="hidden" asp-for="RoleId" />
+
+        <div class="form-group">
             <select asp-for="UserId" asp-items="Model.Users" class="form-control">
                 <option>Select a user...</option>
             </select>
-            <input type="submit" class="btn btn-primary ml-1" value="Assign" />
-        </form>
+        </div>
+
+        <div>
+            <input type="submit" class="btn btn-primary" value="Assign" />
+        </div>
+
+    </form>
 </section>

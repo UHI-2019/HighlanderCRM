@@ -101,6 +101,12 @@ namespace Highlander.Web.Controllers
         {
             try
             {
+                // make sure Administrator can not assign the role of Administrator or Superuser
+                if (User.IsInRole("Administrator") && (model.RoleId == 1 || model.RoleId == 2))
+                {
+                    throw new ArgumentException("Only Superusers can assign this role.");
+                }
+
                 // New UserRole
                 var userRole = new ApplicationUserRole()
                 {
@@ -111,11 +117,12 @@ namespace Highlander.Web.Controllers
                 _context.UserRoles.Add(userRole);
                 _context.SaveChanges();
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index)); // i don't remember writing this
             }
-            catch
+            catch (ArgumentException ex)
             {
-                return View();
+                TempData["Error"] = ex.Message;
+                return RedirectToAction("AddUser", new { id = model.RoleId });
             }
         }
     }
