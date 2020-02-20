@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Highlander.Web.Controllers
 {
-    [Authorize(Roles="Administrator")]
+    [Authorize(Roles="Superuser, Administrator")]
     public class RolesController : Controller
     {
         private readonly ApplicationDbContext _context;

@@ -19,7 +19,10 @@
 
             <input type="hidden" asp-for="@Model.User.Id" />
 
-            <!-- Select here: Regiment -->
+            <div class="form-group">
+                <label asp-for="RegimentId">Regiment</label>
+                <select asp-for="RegimentId" asp-items="@Model.Regiments" class="form-control"></select>
+            </div>
 
             <div>
                 <input type="submit" value="Save" class="btn btn-primary" />
