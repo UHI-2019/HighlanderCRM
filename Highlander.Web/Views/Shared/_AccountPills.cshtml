@@ -10,4 +10,22 @@
             <a class="nav-link @(ViewBag.Code == "R" ? "active" : "")" id="regimental-details" href="/Account/Manage/Regimental">Regimental</a>
         </li>
     }
+    @if (User.IsInRole("Volunteer"))
+    { 
+        <li class="nav-item">
+            <a class="nav-link @(ViewBag.Code == "V" ? "active" : "")" id="volunteer-details" href="/Account/Manage/Volunteer">Volunteer</a>
+        </li>
+    }
+    @if (User.IsInRole("Staff"))
+    { 
+        <li class="nav-item">
+            <a class="nav-link @(ViewBag.Code == "S" ? "active" : "")" id="staff-details" href="/Account/Manage/Staff">Staff</a>
+        </li>
+    }
+    @if (User.IsInRole("Member"))
+    { 
+        <li class="nav-item">
+            <a class="nav-link @(ViewBag.Code == "M" ? "active" : "")" id="member-details" href="/Account/Manage/Member">Member</a>
+        </li>
+    }
 </ul>

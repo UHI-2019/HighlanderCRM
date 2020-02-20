@@ -228,6 +228,8 @@ namespace Highlander.Web.Controllers
                     .ThenInclude(regimental => regimental.Regiment)
                 .Include(x => x.Volunteer)
                     .ThenInclude(volunteer => volunteer.Expertise)
+                .Include(x => x.Volunteer)
+                    .ThenInclude(volunteer => volunteer.EmergencyContact)
                 .FirstOrDefault(x => x.Id == user.Id);
 
             // dynamically create a user to be downloaded as a CSV
@@ -330,7 +332,7 @@ namespace Highlander.Web.Controllers
             user.Email = model.User.Email;
             user.NormalizedEmail = model.User.Email.ToUpper();
 
-            // also update username
+            // also update username since its the same (subject to change)
             user.UserName = model.User.Email;
             user.NormalizedUserName = model.User.Email.ToUpper();
 
@@ -339,7 +341,7 @@ namespace Highlander.Web.Controllers
             await _userManager.UpdateAsync(user);
             _context.SaveChanges();
 
-            // log user out
+            // log user out so they can log in with new email
             await _signManager.SignOutAsync();
 
             return RedirectToAction("Index", "Home");
@@ -350,9 +352,20 @@ namespace Highlander.Web.Controllers
         [Authorize(Roles = "Regimental")]
         public async Task<IActionResult> Regimental()
         {
+            var user = await _userManager.GetUserAsync(this.User);
+            var applicationUser = _context.Users
+                .Include(x => x.Regimental)
+                .FirstOrDefault(x => x.Id == user.Id);
+
             var model = new RegimentalViewModel()
             {
-                User = await _userManager.GetUserAsync(this.User)
+                RegimentId = applicationUser.Regimental != null ? applicationUser.Regimental.RegimentId : 1,
+                User = user,
+                Regiments = _context.Regiments.Select(x => new SelectListItem()
+                {
+                    Text = x.Name,
+                    Value = x.Id.ToString()
+                }).ToList()
             };
 
             return View(model);
@@ -360,13 +373,117 @@ namespace Highlander.Web.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Regimental")]
-        public async Task<IActionResult> UpdateRegimental()
+        public IActionResult UpdateRegimental(RegimentalViewModel model)
         {
+            // change regimentId for the logged in user
+            var regimental = _context.Regimentals.FirstOrDefault(x => x.UserId == model.User.Id);
+            regimental.RegimentId = model.RegimentId;
 
-            // update User.Regimental.Regiment
+            _context.Regimentals.Update(regimental);
+            _context.SaveChanges();
 
-            return View();
+            return RedirectToAction("Regimental");
         }
 
+        [HttpGet]
+        [Route("Account/Manage/Volunteer")]
+        [Authorize(Roles = "Volunteer")]
+        public async Task<IActionResult> Volunteer()
+        {
+            var user = await _userManager.GetUserAsync(this.User);
+            var applicationUser = _context.Users
+                .Include(x => x.Volunteer)
+                    .ThenInclude(volunteer => volunteer.EmergencyContact)
+                .FirstOrDefault(x => x.Id == user.Id);
+
+            var model = new VolunteerViewModel()
+            {
+                ExpertiseId = applicationUser.Volunteer != null ? applicationUser.Volunteer.ExpertiseId : 1,
+                User = user,
+                Expertises = _context.Expertises.Select(x => new SelectListItem()
+                {
+                    Text = x.Name,
+                    Value = x.Id.ToString()
+                }).ToList(),
+                EmergencyContact = applicationUser.Volunteer.EmergencyContact != null ? applicationUser.Volunteer.EmergencyContact : new EmergencyContact()
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Volunteer")]
+        public IActionResult UpdateVolunteer(VolunteerViewModel model)
+        {
+            // change expertiseId for the logged in user
+            var volunteer = _context.Volunteers.Include(x => x.EmergencyContact).FirstOrDefault(x => x.UserId == model.User.Id);
+            volunteer.ExpertiseId = model.ExpertiseId;
+
+            // update emergency contact
+            volunteer.EmergencyContact.Name = model.EmergencyContact.Name;
+            volunteer.EmergencyContact.Relation = model.EmergencyContact.Relation;
+            volunteer.EmergencyContact.TelNo = model.EmergencyContact.TelNo;
+
+            _context.Volunteers.Update(volunteer);
+            _context.SaveChanges();
+
+            return RedirectToAction("Volunteer");
+        }
+
+        [HttpGet]
+        [Route("Account/Manage/Staff")]
+        [Authorize(Roles = "Staff")]
+        public async Task<IActionResult> Staff()
+        {
+            var user = await _userManager.GetUserAsync(this.User);
+            var applicationUser = _context.Users
+                .Include(x => x.Staff)
+                    .ThenInclude(staff => staff.EmergencyContact)
+                .FirstOrDefault(x => x.Id == user.Id);
+
+            var model = new StaffViewModel()
+            {
+                User = user,
+                EmergencyContact = applicationUser.Staff.EmergencyContact != null ? applicationUser.Staff.EmergencyContact : new EmergencyContact(),
+                StartDate = applicationUser.Staff.StartDate
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Staff")]
+        public IActionResult UpdateStaff(StaffViewModel model)
+        {
+            var staff = _context.Staff.Include(x => x.EmergencyContact).FirstOrDefault(x => x.UserId == model.User.Id);
+            
+            // update emergency contact
+            staff.EmergencyContact.Name = model.EmergencyContact.Name;
+            staff.EmergencyContact.Relation = model.EmergencyContact.Relation;
+            staff.EmergencyContact.TelNo = model.EmergencyContact.TelNo;
+
+            _context.Staff.Update(staff);
+            _context.SaveChanges();
+
+            return RedirectToAction("Staff");
+        }
+
+        [HttpGet]
+        [Route("Account/Manage/Member")]
+        [Authorize(Roles = "Member")]
+        public async Task<IActionResult> Member()
+        {
+            var user = await _userManager.GetUserAsync(this.User);
+            var applicationUser = _context.Users
+                .Include(x => x.Member)
+                .FirstOrDefault(x => x.Id == user.Id);
+
+            var model = new MemberViewModel()
+            {
+                Member = applicationUser.Member
+            };
+
+            return View(model);
+        }
     }
 }

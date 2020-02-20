@@ -1,0 +1,31 @@
+﻿@model MemberViewModel
+@{
+    ViewBag.Title = "Member Details";
+    ViewBag.Code = "M";
+}
+
+<h2>Manage your account</h2>
+<h4>Change and view your account settings</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-3">
+        <partial name="_AccountPills" />
+    </div>
+    <div class="col-md-9">
+        <h4 class="mb-4">Member Details</h4>
+        <dl>
+            <dt>Type</dt>
+            <dd>@Model.Member.Type</dd>
+
+            <dt>Number</dt>
+            <dd>@Model.Member.Number</dd>
+
+            <dt>Start Date</dt>
+            <dd>@Model.Member.StartDate.ToShortDateString()</dd>
+
+            <dt>Expiry Date</dt>
+            <dd>@Model.Member.ExpiryDate.ToShortDateString()</dd>
+        </dl>
+    </div>
+</div>

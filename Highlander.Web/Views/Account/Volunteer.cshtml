@@ -1,0 +1,53 @@
+﻿@model VolunteerViewModel
+@{
+    ViewBag.Title = "Volunteer Details";
+    ViewBag.Code = "V";
+}
+
+<h2>Manage your account</h2>
+<h4>Change your account settings</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-3">
+        <partial name="_AccountPills" />
+    </div>
+    <div class="col-md-9">
+        <h4 class="mb-4">Volunteer Details</h4>
+        <form method="post" asp-controller="Account" asp-action="UpdateVolunteer">
+            <div asp-validation-summary="ModelOnly"></div>
+
+            <input type="hidden" asp-for="@Model.User.Id" />
+
+            <div class="form-group">
+                <label asp-for="ExpertiseId">Expertise</label>
+                <select asp-for="ExpertiseId" asp-items="@Model.Expertises" class="form-control"></select>
+            </div>
+
+            <!-- abstract to _partial? or just fix db design. -->
+            <h5 class="mb-3">Emergency Contact</h5>
+            <div class="form-group">
+                <label asp-for="@Model.EmergencyContact.Name">Full Name</label>
+                <input asp-for="@Model.EmergencyContact.Name" class="form-control" />
+                <span asp-validation-for="@Model.EmergencyContact.Name"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="@Model.EmergencyContact.Relation"></label>
+                <input asp-for="@Model.EmergencyContact.Relation" class="form-control" />
+                <span asp-validation-for="@Model.EmergencyContact.Relation"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="@Model.EmergencyContact.TelNo">Phone Number</label>
+                <input asp-for="@Model.EmergencyContact.TelNo" class="form-control" />
+                <span asp-validation-for="@Model.EmergencyContact.TelNo"></span>
+            </div>
+
+            <div>
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+
+        </form>
+    </div>
+</div>

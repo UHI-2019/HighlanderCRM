@@ -62,6 +62,29 @@ namespace Highlander.Web.Models
     public class RegimentalViewModel
     {
         public ApplicationUser User { get; set; }
+        public IEnumerable<SelectListItem> Regiments { get; set; }
+        public int RegimentId { get; set; }
+    }
+
+    public class VolunteerViewModel
+    { 
+        public ApplicationUser User { get; set; }
+        public int ExpertiseId { get; set; }
+        public IEnumerable<SelectListItem> Expertises { get; set; }
+        public EmergencyContact EmergencyContact { get; set; }
+    }
+
+    public class StaffViewModel
+    { 
+        public ApplicationUser User { get; set; }
+        public EmergencyContact EmergencyContact { get; set; }
+        public DateTime StartDate { get; set; }
+    }
+
+    public class MemberViewModel
+    { 
+        public Member Member { get; set; }
+        // will need to extend this in future for membership system which is why im not passing a POCO in
     }
 
     public class Title
