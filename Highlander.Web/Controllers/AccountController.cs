@@ -13,6 +13,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using MailKit.Net.Smtp;
+using MimeKit;
 
 namespace Highlander.Web.Controllers
 {
@@ -435,20 +437,97 @@ namespace Highlander.Web.Controllers
         [Authorize(Roles = "Staff")]
         public async Task<IActionResult> Staff()
         {
+            var users = _context.Users.ToList();
+            var roles = _context.Roles.ToList();
             var user = await _userManager.GetUserAsync(this.User);
             var applicationUser = _context.Users
                 .Include(x => x.Staff)
-                    .ThenInclude(staff => staff.EmergencyContact)
+                .ThenInclude(staff => staff.EmergencyContact)
                 .FirstOrDefault(x => x.Id == user.Id);
 
             var model = new StaffViewModel()
             {
                 User = user,
                 EmergencyContact = applicationUser.Staff.EmergencyContact != null ? applicationUser.Staff.EmergencyContact : new EmergencyContact(),
-                StartDate = applicationUser.Staff.StartDate
+                StartDate = applicationUser.Staff.StartDate,
+                Users = _context.Users.Select(x => new SelectListItem()
+                {
+                    Text = x.UserName,
+                    Value = x.Id.ToString()
+                }).ToList(),               
+                Roles = _context.Roles.Select(x => new SelectListItem()
+                {
+                    Text = x.Name,
+                    Value = x.Id.ToString()
+                }).ToList()
             };
 
             return View(model);
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("Account/Manage/Invite/")]
+        public async Task<IActionResult> Invite()
+        {
+            var rawRole = HttpContext.Request.Query["roleId"].ToString();
+            var roleId = int.Parse(rawRole);
+            var user = await _userManager.GetUserAsync(this.User);
+
+            var model = new InviteViewModel()
+            {
+                User = user,
+                RoleId = roleId
+
+            };
+
+            var userRole = new ApplicationUserRole()
+            {
+                UserId = user.Id,
+                RoleId = roleId
+            };
+
+
+            //Not sure how to insert into database, send help
+                                 
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Staff")]
+        public IActionResult InviteUserToRole(StaffViewModel model)
+        {
+            var staff = _context.Staff.FirstOrDefault(x => x.UserId == model.User.Id);
+           
+
+
+            var roleId = "null";
+
+            MimeMessage message = new MimeMessage();
+
+            MailboxAddress from = new MailboxAddress("Admin","admin@admin.com");
+            message.From.Add(from);
+
+            MailboxAddress to = new MailboxAddress(model.User.Forename + " " + model.User.Surname, model.User.Email);
+            message.To.Add(to);
+
+            message.Subject = "You have been invited to a new role!";
+
+            BodyBuilder bodyBuilder = new BodyBuilder();
+            bodyBuilder.HtmlBody = "<h1>Hello World!</h1>";
+            bodyBuilder.TextBody = "Please click the following link to gain access " + baseURL + ";
+
+            message.Body = bodyBuilder.ToMessageBody();
+
+            SmtpClient client = new SmtpClient();
+            client.Connect("smtp.gmail.com", 465, true);
+            
+            client.Authenticate("insert gmail email", "insert gmail password");
+            client.Send(message);
+            client.Disconnect(true);
+            client.Dispose();
+
+            return RedirectToAction("Staff");
         }
 
         [HttpPost]

@@ -79,7 +79,18 @@ namespace Highlander.Web.Models
         public ApplicationUser User { get; set; }
         public EmergencyContact EmergencyContact { get; set; }
         public DateTime StartDate { get; set; }
+        public IEnumerable<SelectListItem> Users { get; set; }
+        public IEnumerable<SelectListItem> Roles { get; set; }
+        public int RoleId { get; set; }
+        public int UserId { get; set; }
     }
+
+    public class InviteViewModel
+    {
+       public int RoleId { get; set; }
+       public ApplicationUser User { get; set; }
+    }
+
 
     public class MemberViewModel
     { 
