@@ -15,6 +15,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using MimeKit;
+using Microsoft.AspNetCore.Http;
 
 namespace Highlander.Web.Controllers
 {
@@ -470,16 +471,20 @@ namespace Highlander.Web.Controllers
         [Route("Account/Manage/Invite/")]
         public async Task<IActionResult> Invite()
         {
+            // get roleId as int
             var rawRole = HttpContext.Request.Query["roleId"].ToString();
             var roleId = int.Parse(rawRole);
+
+            // get user
             var user = await _userManager.GetUserAsync(this.User);
 
             var model = new InviteViewModel()
             {
                 User = user,
                 RoleId = roleId
-
             };
+
+            // persist new UserRole
 
             var userRole = new ApplicationUserRole()
             {
@@ -487,7 +492,8 @@ namespace Highlander.Web.Controllers
                 RoleId = roleId
             };
 
-
+            _context.UserRoles.Add(userRole);
+            _context.SaveChanges();
             //Not sure how to insert into database, send help
                                  
             return View(model);
@@ -495,34 +501,31 @@ namespace Highlander.Web.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Staff")]
-        public IActionResult InviteUserToRole(StaffViewModel model)
+        public async Task<IActionResult> InviteUserToRole(IFormCollection collection)
         {
-            var staff = _context.Staff.FirstOrDefault(x => x.UserId == model.User.Id);
-           
-
-
-            var roleId = "null";
+            var roleId = collection["RoleId"].ToString();
+            var user = await _userManager.FindByIdAsync(collection["UserId"]);
 
             MimeMessage message = new MimeMessage();
 
             MailboxAddress from = new MailboxAddress("Admin","admin@admin.com");
             message.From.Add(from);
 
-            MailboxAddress to = new MailboxAddress(model.User.Forename + " " + model.User.Surname, model.User.Email);
+            MailboxAddress to = new MailboxAddress(user.Forename + " " + user.Surname, user.Email);
             message.To.Add(to);
 
             message.Subject = "You have been invited to a new role!";
 
             BodyBuilder bodyBuilder = new BodyBuilder();
             bodyBuilder.HtmlBody = "<h1>Hello World!</h1>";
-            bodyBuilder.TextBody = "Please click the following link to gain access " + baseURL + ";
+            //bodyBuilder.TextBody = "Please click the following link to gain access " + baseURL + ";
 
             message.Body = bodyBuilder.ToMessageBody();
 
             SmtpClient client = new SmtpClient();
-            client.Connect("smtp.gmail.com", 465, true);
+            client.Connect("127.0.0.1", 25, false);
             
-            client.Authenticate("insert gmail email", "insert gmail password");
+            //client.Authenticate("insert gmail email", "insert gmail password");
             client.Send(message);
             client.Disconnect(true);
             client.Dispose();
