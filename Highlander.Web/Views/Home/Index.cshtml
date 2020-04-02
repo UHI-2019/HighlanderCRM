@@ -2,5 +2,20 @@
     ViewData["Title"] = "Home Page";
 }
 
-<h1>@ViewData["Title"]</h1>
-<p>Home stuff goes here...</p>
+<section class="pt-4">
+    <h1>@ViewData["Title"]</h1>
+</section>
+        
+<section class="pt-4">
+    <div class="row">
+        @if (User.IsInRole("Superuser") || User.IsInRole("Administrator"))
+        {
+            <div class="col-sm-3">
+                <a asp-controller="Roles" asp-action="Index" class="link-card">
+                    <!-- make this pretty for me -->
+                    <div>Roles</div>
+                </a>
+            </div>
+        }
+    </div>
+</section>
