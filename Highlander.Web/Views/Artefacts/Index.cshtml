@@ -46,7 +46,7 @@
                 <!-- if artefact needs to be completed by staff, vol or admin - highlight red -->
                 <!-- if artefact is archived, highlight grey for admin -->
                 <tr class="
-                        @( (!User.IsInRole("Donor")) && (item.AccessionNumber == null || item.DateAccessioned == null) ? "table-danger" : "" )
+                        @( (!User.IsInRole("Donor")) && (item.IsCompleted == false) ? "table-danger" : "" )
                         @( User.IsInRole("Administrator") && (item.IsArchived == true) ? "table-active" : "" )
                     ">
                     <td>@item.Description</td>
