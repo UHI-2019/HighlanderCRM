@@ -8,12 +8,23 @@
         
 <section class="pt-4">
     <div class="row">
+        <!-- Roles -->
         @if (User.IsInRole("Superuser") || User.IsInRole("Administrator"))
         {
             <div class="col-sm-3">
-                <a asp-controller="Roles" asp-action="Index" class="link-card">
+                <a asp-controller="Roles" asp-action="Index">
                     <!-- make this pretty for me -->
                     <div>Roles</div>
+                </a>
+            </div>
+        }
+
+        <!-- Artefacts -->
+        @if(User.IsInRole("Administrator") || User.IsInRole("Staff") || User.IsInRole("Volunteer") || User.IsInRole("Donor"))
+        {
+            <div class="col-sm-3">
+                <a asp-controller="Artefacts" asp-action="Index">
+                    <div>Artefacts</div>
                 </a>
             </div>
         }

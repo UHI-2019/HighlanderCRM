@@ -1,0 +1,87 @@
+﻿@model ArtefactsDetailsViewModel
+
+@{
+    ViewData["Title"] = Model.Artefact.Description;
+}
+
+<section class="pt-4">
+    <h1>Details</h1>
+
+    @if (User.IsInRole("Administrator") && Model.Artefact.IsArchived == true)
+    {
+        <p>This artefact is archived. <a asp-controller="Artefacts" asp-action="UnArchive" asp-route-id="@Model.Artefact.Id">Undo</a></p>
+    }
+</section>
+
+<section class="pt-2">
+    <dl>
+        <dt>Description</dt>
+        <dd>@Model.Artefact.Description</dd>
+
+        @if (!User.IsInRole("Donor"))
+        {
+            <dt>Accession Number</dt>
+            @if (Model.Artefact.AccessionNumber != null)
+            {
+                <dd>@Model.Artefact.AccessionNumber</dd>
+            }
+            else
+            {
+                <dd>Not set</dd>
+            }
+
+            <dt>Date Accessioned</dt>
+            @if (Model.Artefact.DateAccessioned != null)
+            {
+                <dd>@(((DateTime)Model.Artefact.DateAccessioned).ToShortDateString())</dd>
+            }
+            else
+            {
+                <dd>Not set</dd>
+            }
+
+            <dt>Adlib Reference</dt>
+            @if (Model.Artefact.AdlibReference != null)
+            {
+                <dd>@Model.Artefact.AdlibReference</dd>
+            }
+            else
+            {
+                <dd>Not set</dd>
+            }
+
+            <dt>Donor/s</dt>
+            @foreach (var donorArtefact in Model.Artefact.DonorArtefacts)
+            {
+                <dd>@(donorArtefact.Donor.User.Forename + " " + donorArtefact.Donor.User.Surname)</dd>
+            }
+
+            <dt>Last Edited By</dt>
+            @if (Model.Artefact.UserLastEditedBy != null)
+            {
+                <dd>@(Model.Artefact.UserLastEditedBy.Forename + " " + Model.Artefact.UserLastEditedBy.Surname)</dd>
+            }
+            else
+            {
+                <dd>This artefact has not been edited yet.</dd>
+            }
+        }
+    </dl>
+</section>
+
+@if (!User.IsInRole("Donor"))
+{
+    <a asp-controller="Artefacts" asp-action="Edit" class="btn btn-primary" asp-route-id="@Model.Artefact.Id">Edit</a>
+    <a asp-controller="Artefacts" asp-action="Archive" class="btn btn-primary" asp-route-id="@Model.Artefact.Id">Archive</a>
+}
+
+@if (User.IsInRole("Administrator"))
+{
+    <form method="post" asp-controller="Artefacts" asp-action="Delete" style="display: inline-block" asp-route-id="@Model.Artefact.Id" >
+        <input type="submit" class="btn btn-danger" value="Delete"/>
+    </form>
+}
+
+<div class="mt-4">
+    <a asp-action="Index">Back to List</a>
+</div>

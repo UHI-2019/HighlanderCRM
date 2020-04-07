@@ -1,0 +1,36 @@
+﻿@model Highlander.Data.Models.Artefact
+
+<h4>Artefact</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="@Model.Description" class="control-label"></label>
+                <input asp-for="@Model.Description" class="form-control" />
+                <span asp-validation-for="@Model.Description" class="text-danger"></span>
+            </div>
+            @if (!User.IsInRole("Donor"))
+            {
+                <div class="form-group">
+                    <label asp-for="@Model.AccessionNumber" class="control-label">Accession Number</label>
+                    <input asp-for="@Model.AccessionNumber" class="form-control" />
+                    <span asp-validation-for="@Model.AccessionNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="@Model.AdlibReference" class="control-label">Adlib Reference</label>
+                    <input asp-for="@Model.AdlibReference" class="form-control" />
+                    <span asp-validation-for="@Model.AdlibReference" class="text-danger"></span>
+                </div>
+            }
+            <div class="form-group">
+                <input type="submit" value="Edit" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
