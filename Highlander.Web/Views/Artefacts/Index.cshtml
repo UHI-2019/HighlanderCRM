@@ -1,0 +1,70 @@
+﻿@model ArtefactsIndexViewModel
+@{
+    ViewData["Title"] = "Artefacts";
+}
+
+<section class="pt-4">
+    <h1>@ViewBag.Title</h1>
+</section>
+
+<section class="pt-4">
+    @if (!User.IsInRole("Donor"))
+    {
+        <div class="dropdown">
+            <button type="button" class="btn btn-link dropdown-toggle d-block float-right mb-2" data-toggle="dropdown">
+                Key
+            </button>
+            <div class="dropdown-menu">
+                <table class="table" aria-labelledby="dropdownMenuButton">
+                    <tr>
+                        <td class="p-2 table-danger">Not Complete</td>
+                    </tr>
+                    @if (User.IsInRole("Administrator"))
+                    {
+                        <tr>
+                            <td class="p-2 table-active">Archived</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    }
+
+    <table class="table @(User.IsInRole("Donor") ? "table-striped" : "")">
+        <thead>
+            <tr>
+                <th scope="col">Description</th>
+                <th scope="col">Accession Number</th>
+                <th scope="col">Date Accessioned</th>
+                <th scope="col">Donor</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Artefacts)
+            {
+                <!-- if artefact needs to be completed by staff, vol or admin - highlight red -->
+                <!-- if artefact is archived, highlight grey for admin -->
+                <tr class="
+                        @( (!User.IsInRole("Donor")) && (item.AccessionNumber == null || item.DateAccessioned == null) ? "table-danger" : "" )
+                        @( User.IsInRole("Administrator") && (item.IsArchived == true) ? "table-active" : "" )
+                    ">
+                    <td>@item.Description</td>
+                    <td>@(item.AccessionNumber != null ? item.AccessionNumber : "Not set")</td>
+                    <td>@(item.DateAccessioned != null ? ((DateTime) item.DateAccessioned).ToShortDateString() : "Not set")</td>
+                    <td>
+                        @foreach (var donorArtefact in item.DonorArtefacts)
+                        {
+                            @(donorArtefact.Donor.User.Forename + " " + donorArtefact.Donor.User.Surname) <br />
+                        }
+                    </td>
+                    <td class="details-arrow">
+                        <a asp-controller="Artefacts" asp-action="Details" asp-route-id="@item.Id"><i class="ion ion-md-arrow-round-forward"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>
+
+<a asp-controller="Artefacts" asp-action="Create" class="btn btn-primary">Log New Artefact</a>

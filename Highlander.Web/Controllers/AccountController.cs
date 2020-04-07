@@ -207,7 +207,7 @@ namespace Highlander.Web.Controllers
         [HttpGet]
         [Authorize]
         [Route("Account/Manage/PersonalData")]
-        public async Task<IActionResult> PersonalData()
+        public IActionResult PersonalData()
         {
             return View();
         }

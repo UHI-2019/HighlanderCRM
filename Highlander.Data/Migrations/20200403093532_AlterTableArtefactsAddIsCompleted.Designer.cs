@@ -3,14 +3,16 @@ using System;
 using Highlander.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Highlander.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200403093532_AlterTableArtefactsAddIsCompleted")]
+    partial class AlterTableArtefactsAddIsCompleted
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,43 +49,43 @@ namespace Highlander.Data.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "16828b04-18b4-4479-b518-38ee765561ec",
+                            ConcurrencyStamp = "27749274-006f-48a6-85f5-6093f39b4180",
                             Name = "Superuser"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "eefdc4c8-1101-4cfa-b167-b3156ed43971",
+                            ConcurrencyStamp = "8b7ca4ff-7a95-4166-a613-0df480da6fb2",
                             Name = "Administrator"
                         },
                         new
                         {
                             Id = 3,
-                            ConcurrencyStamp = "6ecc9767-585b-4bf1-974d-c03d20b9f4b0",
+                            ConcurrencyStamp = "7df67509-8595-49db-b40a-c4e337f5ee62",
                             Name = "Staff"
                         },
                         new
                         {
                             Id = 4,
-                            ConcurrencyStamp = "d1b7e8e3-09df-4c73-b2cb-86c8ba2eceb4",
+                            ConcurrencyStamp = "eee0fb6a-489e-4e59-9713-af8f7b61de36",
                             Name = "Volunteer"
                         },
                         new
                         {
                             Id = 5,
-                            ConcurrencyStamp = "d5a260ec-e9b5-4883-ac2d-15a96f517310",
+                            ConcurrencyStamp = "a035267e-c8ce-457e-bef3-02bb68f6fc98",
                             Name = "Donor"
                         },
                         new
                         {
                             Id = 6,
-                            ConcurrencyStamp = "8351694b-09ec-44ef-a2d2-02cd4f8e1ecb",
+                            ConcurrencyStamp = "d95e1aa3-7f14-4219-9b46-54da13df963b",
                             Name = "Member"
                         },
                         new
                         {
                             Id = 7,
-                            ConcurrencyStamp = "9d5c4678-267d-45e9-b1df-9fc80bded073",
+                            ConcurrencyStamp = "29af1d6f-58b8-4af2-b4eb-88774936463a",
                             Name = "Regimental"
                         });
                 });
@@ -224,7 +226,7 @@ namespace Highlander.Data.Migrations
                     b.Property<string>("AdlibReference")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<DateTime?>("DateAccessioned")
+                    b.Property<DateTime>("DateAccessioned")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
@@ -233,13 +235,13 @@ namespace Highlander.Data.Migrations
                     b.Property<bool>("IsArchived")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<int?>("UserArchiveById")
+                    b.Property<int>("IsCompleted")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserLastEditedById")
+                    b.Property<int>("UserArchiveById")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserLastEditedById")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -685,11 +687,15 @@ namespace Highlander.Data.Migrations
                 {
                     b.HasOne("Highlander.Data.Models.ApplicationUser", "UserArchiveBy")
                         .WithMany()
-                        .HasForeignKey("UserArchiveById");
+                        .HasForeignKey("UserArchiveById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Highlander.Data.Models.ApplicationUser", "UserLastEditedBy")
                         .WithMany()
-                        .HasForeignKey("UserLastEditedById");
+                        .HasForeignKey("UserLastEditedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Highlander.Data.Models.CommercialContact", b =>

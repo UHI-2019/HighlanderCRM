@@ -8,7 +8,7 @@ namespace Highlander.Data.Models
     {
         public int Id { get; set; }
         public int DonorId { get; set; }
-        public int ItemId { get; set; }
+        public int ArtefactId { get; set; }
         public virtual Donor Donor { get; set; }
         public virtual Artefact Artefact { get; set; }
     }
