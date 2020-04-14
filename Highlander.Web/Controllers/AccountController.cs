@@ -478,25 +478,34 @@ namespace Highlander.Web.Controllers
             // get user
             var user = await _userManager.GetUserAsync(this.User);
 
-            var model = new InviteViewModel()
+            //make sure the role and user don't already exist
+            var existingUserRole = _context.UserRoles
+                .FirstOrDefault(x => x.UserId == user.Id);
+            
+            if(existingUserRole.RoleId != roleId)
             {
-                User = user,
-                RoleId = roleId
-            };
 
-            // persist new UserRole
+                var model = new InviteViewModel()
+                {
+                    User = user,
+                    RoleId = roleId
+                };
 
-            var userRole = new ApplicationUserRole()
-            {
-                UserId = user.Id,
-                RoleId = roleId
-            };
+                // persist new UserRole
 
-            _context.UserRoles.Add(userRole);
-            _context.SaveChanges();
-            //Not sure how to insert into database, send help
-                                 
-            return View(model);
+                var userRole = new ApplicationUserRole()
+                {
+                    UserId = user.Id,
+                    RoleId = roleId
+
+                };
+
+                _context.UserRoles.Add(userRole);
+                _context.SaveChanges();
+                return View(model);
+            }
+            
+            return View();
         }
 
         [HttpPost]
@@ -508,7 +517,7 @@ namespace Highlander.Web.Controllers
 
             MimeMessage message = new MimeMessage();
 
-            MailboxAddress from = new MailboxAddress("Admin","admin@admin.com");
+            MailboxAddress from = new MailboxAddress("Highlander Museum", "noreply@thehighlandersmuseum.com");
             message.From.Add(from);
 
             MailboxAddress to = new MailboxAddress(user.Forename + " " + user.Surname, user.Email);
@@ -517,14 +526,21 @@ namespace Highlander.Web.Controllers
             message.Subject = "You have been invited to a new role!";
 
             BodyBuilder bodyBuilder = new BodyBuilder();
-            bodyBuilder.HtmlBody = "<h1>Hello World!</h1>";
+            var messageString = "<h1>Hello</h1><p>You've been invited to take on the role of " + collection["RoleName"].ToString() + "</p>";
+            messageString = messageString + "<strong><a href='https://localhost:44390/Account/Manage/Invite?roleid="+ roleId +"'>Please click here to accept the role</a></strong>";
+            bodyBuilder.HtmlBody = messageString;
+
             //bodyBuilder.TextBody = "Please click the following link to gain access " + baseURL + ";
 
             message.Body = bodyBuilder.ToMessageBody();
 
+            var connectionURL = "smtp.gmail.com";
+            var emailUsername = "mralimac@googlemail.com";
+            var emailPassword = "";
+
             SmtpClient client = new SmtpClient();
-            client.Connect("127.0.0.1", 25, false);
-            
+            client.Connect(connectionURL, 25, false);
+            client.Authenticate(emailUsername, emailPassword);
             //client.Authenticate("insert gmail email", "insert gmail password");
             client.Send(message);
             client.Disconnect(true);
