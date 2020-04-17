@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,6 +35,7 @@ namespace Highlander.Web.Controllers
             // admin sees all artefacts
             if (User.IsInRole("Administrator") && (!User.IsInRole("Donor")))
             {
+                // get all artefacts
                 model.Artefacts = _context.Artefacts
                     .Include(x => x.DonorArtefacts)
                         .ThenInclude(donorArtefact => donorArtefact.Donor)
@@ -43,6 +44,7 @@ namespace Highlander.Web.Controllers
             }
             else if (User.IsInRole("Donor"))
             {
+                // get donors artefacts
                 var donorId = _context.Donors.FirstOrDefault(x => x.UserId == user.Id).Id;
 
                 model.Artefacts = _context.Artefacts
@@ -54,6 +56,7 @@ namespace Highlander.Web.Controllers
             }
             else
             {
+                // get all artefacts that are not archived
                 model.Artefacts = _context.Artefacts
                         .Include(x => x.DonorArtefacts)
                             .ThenInclude(donorArtefact => donorArtefact.Donor)
