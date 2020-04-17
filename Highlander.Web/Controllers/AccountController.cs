@@ -13,6 +13,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using MailKit.Net.Smtp;
+using MimeKit;
+using Microsoft.AspNetCore.Http;
 
 namespace Highlander.Web.Controllers
 {
@@ -435,20 +438,115 @@ namespace Highlander.Web.Controllers
         [Authorize(Roles = "Staff")]
         public async Task<IActionResult> Staff()
         {
+            var users = _context.Users.ToList();
+            var roles = _context.Roles.ToList();
             var user = await _userManager.GetUserAsync(this.User);
             var applicationUser = _context.Users
                 .Include(x => x.Staff)
-                    .ThenInclude(staff => staff.EmergencyContact)
+                .ThenInclude(staff => staff.EmergencyContact)
                 .FirstOrDefault(x => x.Id == user.Id);
 
             var model = new StaffViewModel()
             {
                 User = user,
                 EmergencyContact = applicationUser.Staff.EmergencyContact != null ? applicationUser.Staff.EmergencyContact : new EmergencyContact(),
-                StartDate = applicationUser.Staff.StartDate
+                StartDate = applicationUser.Staff.StartDate,
+                Users = _context.Users.Select(x => new SelectListItem()
+                {
+                    Text = x.UserName,
+                    Value = x.Id.ToString()
+                }).ToList(),               
+                Roles = _context.Roles.Select(x => new SelectListItem()
+                {
+                    Text = x.Name,
+                    Value = x.Id.ToString()
+                }).ToList()
             };
 
             return View(model);
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("Account/Manage/Invite/")]
+        public async Task<IActionResult> Invite()
+        {
+            // get roleId as int
+            var rawRole = HttpContext.Request.Query["roleId"].ToString();
+            var roleId = int.Parse(rawRole);
+
+            // get user
+            var user = await _userManager.GetUserAsync(this.User);
+
+            //make sure the role and user don't already exist
+            var existingUserRole = _context.UserRoles
+                .FirstOrDefault(x => x.UserId == user.Id);
+            
+            if(existingUserRole.RoleId != roleId)
+            {
+
+                var model = new InviteViewModel()
+                {
+                    User = user,
+                    RoleId = roleId
+                };
+
+                // persist new UserRole
+
+                var userRole = new ApplicationUserRole()
+                {
+                    UserId = user.Id,
+                    RoleId = roleId
+
+                };
+
+                _context.UserRoles.Add(userRole);
+                _context.SaveChanges();
+                return View(model);
+            }
+            
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Staff")]
+        public async Task<IActionResult> InviteUserToRole(IFormCollection collection)
+        {
+            var roleId = collection["RoleId"].ToString();
+            var user = await _userManager.FindByIdAsync(collection["UserId"]);
+
+            MimeMessage message = new MimeMessage();
+
+            MailboxAddress from = new MailboxAddress("Highlander Museum", "noreply@thehighlandersmuseum.com");
+            message.From.Add(from);
+
+            MailboxAddress to = new MailboxAddress(user.Forename + " " + user.Surname, user.Email);
+            message.To.Add(to);
+
+            message.Subject = "You have been invited to a new role!";
+
+            BodyBuilder bodyBuilder = new BodyBuilder();
+            var messageString = "<h1>Hello</h1><p>You've been invited to take on the role of " + collection["RoleName"].ToString() + "</p>";
+            messageString = messageString + "<strong><a href='https://localhost:44390/Account/Manage/Invite?roleid="+ roleId +"'>Please click here to accept the role</a></strong>";
+            bodyBuilder.HtmlBody = messageString;
+
+            //bodyBuilder.TextBody = "Please click the following link to gain access " + baseURL + ";
+
+            message.Body = bodyBuilder.ToMessageBody();
+
+            var connectionURL = "smtp.gmail.com";
+            var emailUsername = "mralimac@googlemail.com";
+            var emailPassword = "";
+
+            SmtpClient client = new SmtpClient();
+            client.Connect(connectionURL, 25, false);
+            client.Authenticate(emailUsername, emailPassword);
+            //client.Authenticate("insert gmail email", "insert gmail password");
+            client.Send(message);
+            client.Disconnect(true);
+            client.Dispose();
+
+            return RedirectToAction("Staff");
         }
 
         [HttpPost]
