@@ -1,4 +1,4 @@
-﻿@model Highlander.Data.Models.Artefact
+﻿@model Highlander.Web.Models.ArtefactsCreateViewModel
 @{
     ViewData["Title"] = "Edit";
 }
@@ -7,24 +7,32 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form method="post" asp-action="Edit">
+        <form method="post" asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input asp-for="@Model.Artefact.Id" type="hidden"/>
+
             <div class="form-group">
-                <label asp-for="@Model.Description" class="control-label"></label>
-                <input asp-for="@Model.Description" class="form-control" />
-                <span asp-validation-for="@Model.Description" class="text-danger"></span>
+                <label asp-for="@Model.Artefact.Description" class="control-label"></label>
+                <input asp-for="@Model.Artefact.Description" class="form-control" />
+                <span asp-validation-for="@Model.Artefact.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Image" class="control-label">Change Image</label>
+                <input type="file" name="Image" class="form-control" />
+                <span asp-validation-for="@Model.Image" class="text-danger"></span>
             </div>
             @if (!User.IsInRole("Donor"))
             {
                 <div class="form-group">
-                    <label asp-for="@Model.AccessionNumber" class="control-label">Accession Number</label>
-                    <input asp-for="@Model.AccessionNumber" class="form-control" />
-                    <span asp-validation-for="@Model.AccessionNumber" class="text-danger"></span>
+                    <label asp-for="@Model.Artefact.AccessionNumber" class="control-label">Accession Number</label>
+                    <input asp-for="@Model.Artefact.AccessionNumber" class="form-control" />
+                    <span asp-validation-for="@Model.Artefact.AccessionNumber" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="@Model.AdlibReference" class="control-label">Adlib Reference</label>
-                    <input asp-for="@Model.AdlibReference" class="form-control" />
-                    <span asp-validation-for="@Model.AdlibReference" class="text-danger"></span>
+                    <label asp-for="@Model.Artefact.AdlibReference" class="control-label">Adlib Reference</label>
+                    <input asp-for="@Model.Artefact.AdlibReference" class="form-control" />
+                    <span asp-validation-for="@Model.Artefact.AdlibReference" class="text-danger"></span>
                 </div>
             }
             <div class="form-group">

@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Azure.Storage.Blobs;
 using Highlander.Data;
 using Highlander.Data.Models;
+using Highlander.Web.Helpers;
 using Highlander.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -11,6 +13,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace Highlander.Web.Controllers
 {
@@ -19,11 +24,13 @@ namespace Highlander.Web.Controllers
     {
         private readonly ApplicationDbContext _context;
         private UserManager<ApplicationUser> _userManager;
+        private FileUploadHelper _fileUploadHelper;
 
-        public ArtefactsController(ApplicationDbContext context , UserManager<ApplicationUser> userManager)
+        public ArtefactsController(ApplicationDbContext context , UserManager<ApplicationUser> userManager, IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
+            _fileUploadHelper = new FileUploadHelper(configuration); // add to dep injection
         }
 
         // GET: Artefacts
@@ -141,9 +148,19 @@ namespace Highlander.Web.Controllers
         {
             try
             {
-            var user = await _userManager.GetUserAsync(this.User);
+                var user = await _userManager.GetUserAsync(this.User);
 
-            if (model.Artefact.AccessionNumber == null || model.Artefact.AdlibReference == null)
+                string fileName = "artefact-" + DateTime.Now.ToString("yyyyMMddTHH:mm:ssZ");
+
+                // Azure
+                var imageBytes = _fileUploadHelper.ConvertImageToByteArray(model.Image);
+                var imageUrl = await _fileUploadHelper.UploadImageByteArray(
+                        imageBytes,
+                        fileName,
+                        model.Image.ContentType
+                    );
+
+                if (model.Artefact.AccessionNumber == null || model.Artefact.AdlibReference == null)
                 {
                     // mark that accession must be completed
                     model.Artefact.IsCompleted = false;
@@ -154,17 +171,17 @@ namespace Highlander.Web.Controllers
                     model.Artefact.DateAccessioned = DateTime.Now;
                     model.Artefact.IsCompleted = true;
                 }
+                model.Artefact.ImageUrl = imageUrl;
                 model.Artefact.IsArchived = false;
 
-                _context.Artefacts.Add(model.Artefact); // fails here
-                _context.SaveChanges(); // fails here
+                _context.Artefacts.Add(model.Artefact);
+                _context.SaveChanges();
 
                 var donorArtefact = new DonorArtefact()
                 {
-                    ArtefactId = model.Artefact.Id // error?
+                    ArtefactId = model.Artefact.Id
                 };
 
-                // set Donor
                 if (User.IsInRole("Donor")) // what if user is both a Donor and a Volunteer/Staff/Admin?
                 {
                     // set currently logged in Donor
@@ -191,7 +208,10 @@ namespace Highlander.Web.Controllers
         [Authorize(Roles = "Administrator, Staff, Volunteer")]
         public ActionResult Edit(int id)
         {
-            var model = _context.Artefacts.FirstOrDefault(x => x.Id == id);
+            var model = new ArtefactsCreateViewModel()
+            { 
+                Artefact = _context.Artefacts.FirstOrDefault(x => x.Id == id),
+            };
             return View(model);
         }
 
@@ -199,27 +219,41 @@ namespace Highlander.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator, Staff, Volunteer")]
-        public async Task<ActionResult> Edit(Artefact model)
+        public async Task<ActionResult> Edit(ArtefactsCreateViewModel model)
         {
             try
             {
-                if (model.AccessionNumber != null)
+                if (model.Artefact.AccessionNumber != null)
                 {
                     // set date
-                    model.DateAccessioned = DateTime.Now;
+                    model.Artefact.DateAccessioned = DateTime.Now;
 
                     // if completed correctly
-                    if (model.AdlibReference != null)
+                    if (model.Artefact.AdlibReference != null)
                     {
-                        model.IsCompleted = true;
+                        model.Artefact.IsCompleted = true;
                     }
+                }
+
+                if (model.Image != null)
+                {
+                    // change image in storage
+                    string fileName = "artefact-" + DateTime.Now.ToString("yyyyMMddTHH:mm:ssZ");
+
+                    var imageBytes = _fileUploadHelper.ConvertImageToByteArray(model.Image);
+                    var imageUrl = await _fileUploadHelper.UploadImageByteArray(
+                            imageBytes,
+                            fileName,
+                            model.Image.ContentType
+                        );
+                    model.Artefact.ImageUrl = imageUrl;
                 }
 
                 // update last edited by
                 var user = await _userManager.GetUserAsync(this.User);
-                model.UserLastEditedById = user.Id;
+                model.Artefact.UserLastEditedById = user.Id;
 
-                _context.Artefacts.Update(model);
+                _context.Artefacts.Update(model.Artefact);
                 _context.SaveChanges();
 
                 return RedirectToAction(nameof(Index));

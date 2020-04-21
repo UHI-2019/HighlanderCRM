@@ -1,4 +1,5 @@
 ﻿using Highlander.Data.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ namespace Highlander.Web.Models
     public class ArtefactsCreateViewModel
     { 
         public Artefact Artefact { get; set; }
+        public IFormFile Image { get; set; }
         public int DonorId { get; set; }
         public IEnumerable<SelectListItem> Donors { get; set; }
     }
