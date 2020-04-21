@@ -123,8 +123,13 @@ namespace Highlander.Web.Controllers
                 }
             }
             else if (result.IsLockedOut)
-            { 
+            {
                 // add recovery logic
+
+            }
+            else
+            {
+                return View(model);
             }
             return RedirectToAction("Index", "Home");
         }

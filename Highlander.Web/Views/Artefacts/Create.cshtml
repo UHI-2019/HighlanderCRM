@@ -7,12 +7,17 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form method="post" asp-action="Create">
+        <form method="post" asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="@Model.Artefact.Description" class="control-label"></label>
                 <input asp-for="@Model.Artefact.Description" class="form-control" />
                 <span asp-validation-for="@Model.Artefact.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Image" class="control-label">Image</label>
+                <input type="file" name="Image" class="form-control"/>
+                <span asp-validation-for="@Model.Image" class="text-danger"></span>
             </div>
             @if (!User.IsInRole("Donor"))
             {

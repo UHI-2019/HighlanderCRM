@@ -17,6 +17,18 @@
         <dt>Description</dt>
         <dd>@Model.Artefact.Description</dd>
 
+        <dt>Image</dt>
+        @if (Model.Artefact.ImageUrl != null)
+        {
+            <dd class="mt-1 pb-0 img-thumbnail d-inline-block">
+                <img src="@Model.Artefact.ImageUrl" width="500" />
+            </dd>
+        }
+        else
+        { 
+            <dd>No image yet.</dd>
+        }
+
         @if (!User.IsInRole("Donor"))
         {
             <dt>Accession Number</dt>
@@ -76,11 +88,24 @@
 
 @if (User.IsInRole("Administrator"))
 {
-    <form method="post" asp-controller="Artefacts" asp-action="Delete" style="display: inline-block" asp-route-id="@Model.Artefact.Id" >
-        <input type="submit" class="btn btn-danger" value="Delete"/>
+    <form method="post" asp-controller="Artefacts" asp-action="Delete" style="display: inline-block" asp-route-id="@Model.Artefact.Id">
+        <input type="submit" class="btn btn-danger" value="Delete" />
     </form>
 }
 
 <div class="mt-4">
     <a asp-action="Index">Back to List</a>
 </div>
+
+@section scripts {
+    <script src="~/lib/jquery.zoom.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+              $('img')
+                .wrap('<span style="display:inline-block"></span>')
+                .css('display', 'block')
+                .parent()
+                .zoom();
+        });
+    </script>
+}

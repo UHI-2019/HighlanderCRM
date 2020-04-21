@@ -12,18 +12,16 @@ namespace Highlander.Web.Helpers
 {
     public class FileUploadHelper
     {
-        public string ConnectionString { get; } // add option to override
+        private string _connectionString; // add option to override
 
-        private readonly IConfiguration _configuration;
         private readonly CloudBlobClient _client;
         private readonly CloudBlobContainer _container;
 
         public FileUploadHelper(IConfiguration configuration)
         {
-            _configuration = configuration;
-            ConnectionString = configuration.GetConnectionString("StorageConnection");
+            _connectionString = configuration.GetConnectionString("StorageConnection");
 
-            var account = CloudStorageAccount.Parse(ConnectionString);
+            CloudStorageAccount account = CloudStorageAccount.Parse(_connectionString);
             _client = account.CreateCloudBlobClient();
             _container = _client.GetContainerReference("highlander");
         }
