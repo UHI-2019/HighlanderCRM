@@ -1,21 +1,16 @@
-﻿ using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Azure.Storage.Blobs;
 using Highlander.Data;
 using Highlander.Data.Models;
 using Highlander.Web.Helpers;
 using Highlander.Web.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace Highlander.Web.Controllers
 {
@@ -49,7 +44,7 @@ namespace Highlander.Web.Controllers
                             .ThenInclude(donor => donor.User)
                     .ToList();
             }
-            else if (User.IsInRole("Donor"))
+            else if ( User.IsInRole("Donor") && ((!User.IsInRole("Staff")) || (!User.IsInRole("Volunteer"))) )
             {
                 // get donors artefacts
                 var donorId = _context.Donors.FirstOrDefault(x => x.UserId == user.Id).Id;
