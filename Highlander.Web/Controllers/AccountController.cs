@@ -113,25 +113,37 @@ namespace Highlander.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            var result = await _signManager.PasswordSignInAsync(model.Username, model.Password, false, false);
-
-            if (result.Succeeded)
+            try
             {
-                if (model.ReturnUrl != null)
+                var result = await _signManager.PasswordSignInAsync(model.Username, model.Password, false, false);
+
+                if (result.Succeeded)
                 {
-                    return Redirect(model.ReturnUrl);
+                    if (model.ReturnUrl != null)
+                    {
+                        return Redirect(model.ReturnUrl);
+                    }
                 }
+                else
+                {
+                    ModelState.AddModelError("Password", "Either your username or password is incorrect.");
+                    return View(model);
+                }
+                return RedirectToAction("Index", "Home");
             }
-            else if (result.IsLockedOut)
+            catch
             {
-                // add recovery logic
-
-            }
-            else
-            {
+                // empty fields
+                if (model.Username == null)
+                {
+                    ModelState.AddModelError("Username", "Username is required");
+                }
+                if (model.Password == null)
+                {
+                    ModelState.AddModelError("Password", "Password is required");
+                }
                 return View(model);
             }
-            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]

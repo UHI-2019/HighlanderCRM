@@ -16,11 +16,9 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="username_icon"><i class="fas fa-user"></i></span>
                         </div>
-                        <input asp-for="Username" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="username_icon">
+                        <input asp-for="Username" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="username_icon" required>
                     </div>
-                    <!--label asp-for="Username"></label>
-                <input asp-for="Username" class="form-control" />-->
-                    <span asp-validation-for="Username"></span>
+                    <span class="text-danger" asp-validation-for="Username"></span>
                 </div>
 
                 <!--Input password-->
@@ -29,12 +27,9 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="password_icon"><i class="fas fa-lock"></i></span>
                         </div>
-                        <input asp-for="Password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="password_icon">
+                        <input asp-for="Password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="password_icon" required>
                     </div>
-                    <span asp-validation-for="Username"></span>
-                    <!--<label asp-for="Password"></label>
-                <input asp-for="Password" class="form-control" />-->
-                    <span asp-validation-for="Password"></span>
+                    <span class="text-danger" asp-validation-for="Password"></span>
                 </div>
 
                 <div class="mt-2">

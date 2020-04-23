@@ -3,6 +3,7 @@ using Highlander.Data.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json.Serialization;
 
 namespace Highlander.Web.Models
 {
