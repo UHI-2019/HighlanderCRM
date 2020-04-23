@@ -22,6 +22,7 @@ namespace Highlander.Data
         public DbSet<Decoration> Decorations { get; set; }
         public DbSet<Donor> Donors { get; set; }
         public DbSet<DonorArtefact> DonorArtefacts { get; set; }
+        public DbSet<EmailAuth> EmailAuths { get; set; }
         public DbSet<EmergencyContact> EmergencyContacts { get; set; }
         public DbSet<Expertise> Expertises { get; set; }
         public DbSet<Member> Members { get; set; }

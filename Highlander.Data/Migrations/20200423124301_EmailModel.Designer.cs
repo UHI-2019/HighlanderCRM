@@ -3,14 +3,16 @@ using System;
 using Highlander.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Highlander.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200423124301_EmailModel")]
+    partial class EmailModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,43 +49,43 @@ namespace Highlander.Data.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "08d6b164-abed-4e52-bc07-9efd7e9777d9",
+                            ConcurrencyStamp = "1000c4c3-30fe-4c48-abbf-e475d73692ae",
                             Name = "Superuser"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "8e0c6116-f4e3-4698-96a6-0a50bc274efc",
+                            ConcurrencyStamp = "00aba029-eefd-4957-9cb5-d909dd998fa3",
                             Name = "Administrator"
                         },
                         new
                         {
                             Id = 3,
-                            ConcurrencyStamp = "a86d68fb-aef5-49db-800d-af580eacd825",
+                            ConcurrencyStamp = "e5b97064-6a66-4388-820b-aee0d0a9a3f1",
                             Name = "Staff"
                         },
                         new
                         {
                             Id = 4,
-                            ConcurrencyStamp = "f49c0d3c-f9a9-41bd-8c0e-e554b789aa84",
+                            ConcurrencyStamp = "fd787ac4-17be-4734-af1b-5b32f6c9c4a7",
                             Name = "Volunteer"
                         },
                         new
                         {
                             Id = 5,
-                            ConcurrencyStamp = "cc0b52e2-ba8f-47e3-b5f4-971a0429b575",
+                            ConcurrencyStamp = "f17af5bc-e7c7-402d-ac8d-03536f07dd5a",
                             Name = "Donor"
                         },
                         new
                         {
                             Id = 6,
-                            ConcurrencyStamp = "ef87f5e7-f105-4322-805b-78e7b487bcf5",
+                            ConcurrencyStamp = "8b04fab7-b3d8-4141-8cef-715fa8cc9d9d",
                             Name = "Member"
                         },
                         new
                         {
                             Id = 7,
-                            ConcurrencyStamp = "02b47355-e801-42fb-bf27-74c5bb985e78",
+                            ConcurrencyStamp = "f69d42c4-de67-43e0-bc2a-179c10671adc",
                             Name = "Regimental"
                         });
                 });
@@ -351,26 +353,6 @@ namespace Highlander.Data.Migrations
                     b.HasIndex("DonorId");
 
                     b.ToTable("DonorArtefacts");
-                });
-
-            modelBuilder.Entity("Highlander.Data.Models.EmailAuth", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Hash")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EmailAuths");
                 });
 
             modelBuilder.Entity("Highlander.Data.Models.EmergencyContact", b =>

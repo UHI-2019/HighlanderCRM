@@ -3,14 +3,16 @@ using System;
 using Highlander.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Highlander.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200423125004_EmailModel2")]
+    partial class EmailModel2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,43 +49,43 @@ namespace Highlander.Data.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "08d6b164-abed-4e52-bc07-9efd7e9777d9",
+                            ConcurrencyStamp = "4fc534b3-ff41-4a5b-90f5-f1ef93eadc1b",
                             Name = "Superuser"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "8e0c6116-f4e3-4698-96a6-0a50bc274efc",
+                            ConcurrencyStamp = "bd4a835b-a70a-4b81-be13-b3906f8ead2e",
                             Name = "Administrator"
                         },
                         new
                         {
                             Id = 3,
-                            ConcurrencyStamp = "a86d68fb-aef5-49db-800d-af580eacd825",
+                            ConcurrencyStamp = "e82f3c90-8d0e-46d7-8db2-589c80a7b9cd",
                             Name = "Staff"
                         },
                         new
                         {
                             Id = 4,
-                            ConcurrencyStamp = "f49c0d3c-f9a9-41bd-8c0e-e554b789aa84",
+                            ConcurrencyStamp = "e428cc87-65db-4bb4-88c0-9f54d5ce7c18",
                             Name = "Volunteer"
                         },
                         new
                         {
                             Id = 5,
-                            ConcurrencyStamp = "cc0b52e2-ba8f-47e3-b5f4-971a0429b575",
+                            ConcurrencyStamp = "14f83388-22ae-4822-9ab8-3dd4f88144e7",
                             Name = "Donor"
                         },
                         new
                         {
                             Id = 6,
-                            ConcurrencyStamp = "ef87f5e7-f105-4322-805b-78e7b487bcf5",
+                            ConcurrencyStamp = "83683ead-db4c-4a86-997b-2c54d1e4be40",
                             Name = "Member"
                         },
                         new
                         {
                             Id = 7,
-                            ConcurrencyStamp = "02b47355-e801-42fb-bf27-74c5bb985e78",
+                            ConcurrencyStamp = "98f3259b-f03f-45ae-8646-d0c8c995468e",
                             Name = "Regimental"
                         });
                 });
@@ -359,14 +361,14 @@ namespace Highlander.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Hash")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
+
+                    b.Property<string>("hash")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
