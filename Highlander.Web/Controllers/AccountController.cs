@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using MimeKit;
 using Microsoft.AspNetCore.Http;
+using System;
 
 namespace Highlander.Web.Controllers
 {
@@ -488,18 +489,36 @@ namespace Highlander.Web.Controllers
         [Route("Account/Manage/Invite/")]
         public async Task<IActionResult> Invite()
         {
-            // get roleId as int
-            var rawRole = HttpContext.Request.Query["roleId"].ToString();
-            var roleId = int.Parse(rawRole);
+           
+            // get the hash code from the URL String
+            var code = HttpContext.Request.Query["code"].ToString();
 
-            // get user
-            var user = await _userManager.GetUserAsync(this.User);
+            Console.WriteLine(_context.EmailAuths.FirstOrDefault());
+
+            //Fetch the correct email object from the EmailAuth table for comparsion
+            var EmailAuth = _context.EmailAuths
+                .FirstOrDefault(x => x.Hash == code);
+
+            if(EmailAuth == null)
+            {
+                return View();
+            }
+
+            var roleId = EmailAuth.RoleId;
+            var userId = EmailAuth.UserId;
+
+
+            var user = _context.Users
+                .FirstOrDefault(x => x.Id == userId);
 
             //make sure the role and user don't already exist
             var existingUserRole = _context.UserRoles
-                .FirstOrDefault(x => x.UserId == user.Id);
-            
-            if(existingUserRole.RoleId != roleId)
+                .FirstOrDefault(x => x.UserId == user.Id && x.RoleId == roleId);
+
+
+            _context.EmailAuths.Remove(EmailAuth);
+
+            if (existingUserRole == null)
             {
 
                 var model = new InviteViewModel()
@@ -508,14 +527,69 @@ namespace Highlander.Web.Controllers
                     RoleId = roleId
                 };
 
-                // persist new UserRole
-
                 var userRole = new ApplicationUserRole()
                 {
                     UserId = user.Id,
                     RoleId = roleId
 
                 };
+
+                switch (roleId)
+                {
+                    case 1:
+                    break;
+
+                    case 2:
+                    break;
+
+                    case 3:
+                        var StaffModel = new Staff()
+                        {
+                            Id = 0,
+                            UserId = user.Id,
+                            StartDate = System.DateTime.Now
+
+                        };
+                        _context.Staff.Add(StaffModel);
+                        break;
+
+                    case 4:
+                        var VolunteerModel = new Volunteer()
+                        {
+                            Id = 0,
+                            UserId = user.Id
+                        };
+                        _context.Volunteers.Add(VolunteerModel);
+                        break;
+
+                    case 5:
+                        var DonorModel = new Donor()
+                        {
+                            Id = 0,
+                            UserId = user.Id
+                        };
+                        _context.Donors.Add(DonorModel);
+                        break;
+
+                    case 6:
+                        var MemberModel = new Member()
+                        {
+                            Id = 0,
+                            UserId = user.Id
+                        };
+                        _context.Members.Add(MemberModel);
+                        break;
+
+                    case 7:
+                        var RegimentalModel = new Regimental()
+                        {
+                            Id = 0,
+                            UserId = user.Id
+                        };
+                        _context.Regimentals.Add(RegimentalModel);                       
+                        break;
+                }
+
 
                 _context.UserRoles.Add(userRole);
                 _context.SaveChanges();
@@ -525,12 +599,35 @@ namespace Highlander.Web.Controllers
             return View();
         }
 
+
+        private static Random random = new Random();
+        public static string RandomString(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
         [HttpPost]
         [Authorize(Roles = "Staff")]
         public async Task<IActionResult> InviteUserToRole(IFormCollection collection)
         {
             var roleId = collection["RoleId"].ToString();
             var user = await _userManager.FindByIdAsync(collection["UserId"]);
+            var hashCode = RandomString(32);
+
+            int roleIdInt = int.Parse(roleId);
+
+            var EmailAuth = new EmailAuth()
+            {
+                Id = 0,
+                Hash = hashCode,
+                RoleId = roleIdInt,
+                UserId = user.Id
+            };
+
+            _context.EmailAuths.Add(EmailAuth);
+            _context.SaveChanges();
 
             MimeMessage message = new MimeMessage();
 
@@ -544,7 +641,7 @@ namespace Highlander.Web.Controllers
 
             BodyBuilder bodyBuilder = new BodyBuilder();
             var messageString = "<h1>Hello</h1><p>You've been invited to take on the role of " + collection["RoleName"].ToString() + "</p>";
-            messageString = messageString + "<strong><a href='https://localhost:44390/Account/Manage/Invite?roleid="+ roleId +"'>Please click here to accept the role</a></strong>";
+            messageString = messageString + "<strong><a href='https://localhost:44390/Account/Manage/Invite?code="+ hashCode +"'>Please click here to accept the role</a></strong>";
             bodyBuilder.HtmlBody = messageString;
 
             //bodyBuilder.TextBody = "Please click the following link to gain access " + baseURL + ";
