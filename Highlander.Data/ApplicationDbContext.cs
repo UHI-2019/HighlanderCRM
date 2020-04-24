@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Policy;
 using System.Text;
 using Highlander.Data.Models;
 using Microsoft.AspNetCore.Identity;
@@ -11,6 +12,10 @@ namespace Highlander.Data
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int, 
         IdentityUserClaim<int>, ApplicationUserRole, IdentityUserLogin<int>, IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
+        public ApplicationDbContext()
+        {
+        }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
@@ -32,6 +37,7 @@ namespace Highlander.Data
         public DbSet<Staff> Staff { get; set; }
         public DbSet<UserCommercialContact> UserCommercialContacts { get; set; }
         public DbSet<Volunteer> Volunteers { get; set; }
+        public DbSet<SiteOption> SiteOptions { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -91,6 +97,11 @@ namespace Highlander.Data
                 e.HasData(new ApplicationRole() { Id = 5, Name = "Donor" });
                 e.HasData(new ApplicationRole() { Id = 6, Name = "Member" });
                 e.HasData(new ApplicationRole() { Id = 7, Name = "Regimental" });
+            });
+
+            modelBuilder.Entity<SiteOption>(e => {
+                e.HasData(new SiteOption() { Id = 1, Name = "site-name", Value = "Highlander", Type = "text" });
+                e.HasData(new SiteOption() { Id = 2, Name = "primary-colour", Value = "#007bff", Type = "color" });
             });
         }
     }

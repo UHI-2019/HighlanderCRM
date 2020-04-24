@@ -15,13 +15,14 @@ using Microsoft.Extensions.Configuration;
 namespace Highlander.Web.Controllers
 {
     [Authorize(Roles = "Administrator, Staff, Volunteer, Donor")]
-    public class ArtefactsController : Controller
+    public class ArtefactsController : BaseController
     {
         private readonly ApplicationDbContext _context;
         private UserManager<ApplicationUser> _userManager;
         private FileUploadHelper _fileUploadHelper;
 
-        public ArtefactsController(ApplicationDbContext context , UserManager<ApplicationUser> userManager, IConfiguration configuration)
+        public ArtefactsController(ApplicationDbContext context ,
+            UserManager<ApplicationUser> userManager, IConfiguration configuration) : base(context)
         {
             _context = context;
             _userManager = userManager;

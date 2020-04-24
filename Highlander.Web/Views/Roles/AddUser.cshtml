@@ -1,13 +1,9 @@
 ﻿@model RolesAddUserViewModel
 @{
-    ViewData["Title"] = "AddUser";
+    ViewData["Title"] = "Assign user to " + @Model.Role.Name;
 }
 
-<section class="pt-4">
-    <h1>Assign to @Model.Role.Name</h1>
-</section>
-
-<section class="pt-4">
+<section>
     <form asp-action="AddUser" method="post">
 
         @if (TempData["Error"] != null)

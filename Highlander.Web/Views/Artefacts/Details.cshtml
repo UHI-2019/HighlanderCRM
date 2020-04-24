@@ -3,16 +3,14 @@
     ViewData["Title"] = Model.Artefact.Description;
 }
 
-<section class="pt-4">
-    <h1>Details</h1>
-
+<section>
     @if (User.IsInRole("Administrator") && Model.Artefact.IsArchived == true)
     {
         <p>This artefact is archived. <a asp-controller="Artefacts" asp-action="UnArchive" asp-route-id="@Model.Artefact.Id">Undo</a></p>
     }
 </section>
 
-<section class="pt-2">
+<section>
     <dl>
         <dt>Description</dt>
         <dd>@Model.Artefact.Description</dd>

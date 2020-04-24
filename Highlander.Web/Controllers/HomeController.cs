@@ -10,11 +10,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Highlander.Web.Controllers
 {
-    public class HomeController : Controller
+    [Authorize]
+    public class HomeController : BaseController
     {
         private readonly ApplicationDbContext _context;
 
-        public HomeController(ApplicationDbContext context)
+        public HomeController(ApplicationDbContext context) : base(context)
         {
             _context = context;
         }
@@ -24,7 +25,6 @@ namespace Highlander.Web.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Superuser")]
         public IActionResult Privacy()
         {
             var user = _context.Users
