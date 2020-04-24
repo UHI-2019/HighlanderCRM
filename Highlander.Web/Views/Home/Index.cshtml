@@ -2,34 +2,47 @@
     ViewData["Title"] = "Home Page";
 }
         
-<section class="pt-4">
+<section>
     <div class="row">
         <!-- Roles -->
         @if (User.IsInRole("Superuser") || User.IsInRole("Administrator"))
         {
-            <div class="col-sm-3">
-                <a asp-controller="Roles" asp-action="Index">
-                    <!-- make this pretty for me -->
-                    <div>Roles</div>
+            <div class="card mt-3 p-4 mr-3 col-sm-3 col-12">
+                <a asp-controller="Roles" asp-action="Index" title="Title">
+                    <div class="card-block">
+                        <h4 class="card-title text-dark ">Roles</h4>
+                        <p class="card-text text-dark ">Edit and manage user roles.</p>
+                        <p class="card-text ">
+                    </div>
                 </a>
             </div>
         }
 
         <!-- Artefacts -->
-        @if(User.IsInRole("Administrator") || User.IsInRole("Staff") || User.IsInRole("Volunteer") || User.IsInRole("Donor"))
+        @if (User.IsInRole("Administrator") || User.IsInRole("Staff") || User.IsInRole("Volunteer") || User.IsInRole("Donor"))
         {
-            <div class="col-sm-3">
-                <a asp-controller="Artefacts" asp-action="Index">
-                    <div>Artefacts</div>
+            <div class="card mt-3 p-4 mr-3 col-sm-3 col-12">
+                <a asp-controller="Artifacts" asp-action="Index" title="Title">
+                    <div class="card-block">
+                        <h4 class="card-title text-dark ">Artefacts</h4>
+                        <p class="card-text text-dark ">Donate and view Artefacts.</p>
+                        <p class="card-text ">
+                    </div>
                 </a>
             </div>
         }
 
         <!-- Site Options -->
         @if (User.IsInRole("Superuser"))
-        { 
-            <div class="col-sm-3">
-                <a asp-controller="SiteOptions" asp-action="Edit">Site Settings</a>
+        {
+            <div class="card mt-3 p-4 mr-3 col-sm-3 col-12">
+                <a asp-controller="SiteOptions" asp-action="Edit" title="Title">
+                    <div class="card-block">
+                        <h4 class="card-title text-dark ">Site Settings</h4>
+                        <p class="card-text text-dark ">Customise the look and feel of the site.</p>
+                        <p class="card-text ">
+                    </div>
+                </a>
             </div>
         }
     </div>
