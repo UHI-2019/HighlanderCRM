@@ -1,0 +1,32 @@
+﻿@model IEnumerable<SiteOption>
+@{
+    ViewData["Title"] = "Site Settings";
+}
+
+<div class="row">
+    <div class="col-md-6">
+
+        @foreach (var item in Model)
+        {
+            <form class="form-inline mb-4" method="post" asp-action="Edit">
+                <input type="hidden" name="Name" value="@item.Name" />
+                <input type="hidden" name="Type" value="@item.Type"/>
+                <input type="hidden" name="Id" value="@item.Id"/>
+                <div class="form-group">
+                    <label asp-for="@item" class="control-label mr-2">@item.Name.Replace('-', ' ').ToUpper():</label>
+                    @if (item.Type.ToUpper() == "TEXT")
+                    {
+                        <input name="Value" value="@item.Value" class="form-control mr-2" />
+                    }
+                    else if (item.Type.ToUpper() == "COLOR")
+                    {
+                        <input name="Value" value="@item.Value" type="color" class="mr-2" />
+                    }
+                </div>
+                <div class="form-group">
+                    <input name="@item.Name" type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        }
+    </div>
+</div>

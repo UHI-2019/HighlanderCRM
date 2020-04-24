@@ -20,7 +20,7 @@ using System;
 
 namespace Highlander.Web.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         private SignInManager<ApplicationUser> _signManager;
         private UserManager<ApplicationUser> _userManager;
@@ -35,7 +35,8 @@ namespace Highlander.Web.Controllers
             new Title(){ Id = 4, Value = "Ms."}
         };
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signManager, ApplicationDbContext context)
+        public AccountController(UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signManager, ApplicationDbContext context) : base(context)
         {
             _userManager = userManager;
             _signManager = signManager;
