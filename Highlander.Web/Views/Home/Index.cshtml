@@ -22,7 +22,7 @@
         @if (User.IsInRole("Administrator") || User.IsInRole("Staff") || User.IsInRole("Volunteer") || User.IsInRole("Donor"))
         {
             <div class="card mt-3 p-4 mr-3 col-sm-3 col-12">
-                <a asp-controller="Artifacts" asp-action="Index" title="Title">
+                <a asp-controller="Artefacts" asp-action="Index" title="Title">
                     <div class="card-block">
                         <h4 class="card-title text-dark ">Artefacts</h4>
                         <p class="card-text text-dark ">Donate and view Artefacts.</p>
