@@ -3,110 +3,159 @@
     ViewBag.Title = "Register";
     Layout = "_AuthLayout";
 }
-<h1 class="mt-4">Register</h1>
+<div class="container">
+    <form method="post" asp-controller="Account" asp-action="Register">
 
-<form class="mt-4" method="post" asp-controller="Account" asp-action="Register">
-    <div asp-validation-summary="ModelOnly"></div>
+        <div asp-validation-summary="ModelOnly"></div>
 
-    <div class="form-group">
-        <label asp-for="TitleId">Title</label>
-        <select asp-for="TitleId" asp-items="@Model.Titles" class="form-control"></select>
-    </div>
+        <!--PERSONALS DETAILS-->
+        <div id="details">
+            <!--TITLE-->
+            <div class="form-group">
+                <label asp-for="TitleId"></label>
+                <select asp-for="TitleId" asp-items="@Model.Titles" class="form-control"></select>
+            </div>
+            <!--DECORATION-->
+            <div class="form-group">
+                <label asp-for="DecorationId"></label>
+                <select asp-for="DecorationId" asp-items="@Model.Decorations" class="form-control"></select>
+            </div>
+            <!--FORENAME | INITIAL | SURNAME-->
+            <div class="row">
+                <div class="form-group col-sm-4">
+                    <label asp-for="@Model.Forename"></label>
+                    <input asp-for="@Model.Forename" class="form-control" />
+                    <span asp-validation-for="@Model.Forename"></span>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label asp-for="@Model.Initial"></label>
+                    <input asp-for="@Model.Initial" class="form-control" />
+                    <span asp-validation-for="@Model.Initial"></span>
+                </div>
 
-    <div class="form-group">
-        <label asp-for="DecorationId">Decoration</label>
-        <select asp-for="DecorationId" asp-items="@Model.Decorations" class="form-control"></select>
-    </div>
-
-    <div class="row">
-        <div class="form-group col-sm-4">
-            <label asp-for="@Model.Forename"></label>
-            <input asp-for="@Model.Forename" class="form-control" />
-            <span asp-validation-for="@Model.Forename"></span>
+                <div class="form-group col-sm-4">
+                    <label asp-for="@Model.Surname"></label>
+                    <input asp-for="@Model.Surname" class="form-control" />
+                    <span asp-validation-for="@Model.Surname"></span>
+                </div>
+            </div>
+            <!--PHONENUMBER-->
+            <div class="form-group">
+                <label asp-for="@Model.PhoneNumber"></label>
+                <input asp-for="@Model.PhoneNumber" class="form-control" />
+                <span asp-validation-for="@Model.PhoneNumber"></span>
+            </div>
         </div>
 
-        <div class="form-group col-sm-4">
-            <label asp-for="@Model.Initial"></label>
-            <input asp-for="@Model.Initial" class="form-control" />
-            <span asp-validation-for="@Model.Initial"></span>
+        <!--ADRESS-->
+        <div id="adress" style="display:none">
+            <!--ADRESS 1-->
+            <div class="form-group">
+                <label asp-for="@Model.AddressLine1"></label>
+                <input asp-for="@Model.AddressLine1" class="form-control" />
+                <span asp-validation-for="@Model.AddressLine1"></span>
+            </div>
+            <!--ADRESS 2-->
+            <div class="form-group">
+                <label asp-for="@Model.AddressLine2"></label>
+                <input asp-for="@Model.AddressLine2" class="form-control" />
+                <span asp-validation-for="@Model.AddressLine2"></span>
+            </div>
+            <!--ADRESS 3-->
+            <div class="form-group">
+                <label asp-for="@Model.AddressLine3"></label>
+                <input asp-for="@Model.AddressLine3" class="form-control" />
+                <span asp-validation-for="@Model.AddressLine3"></span>
+            </div>
+            <!--COUNTY | COUNTRY | POSTCODE-->
+            <div class="row">
+                <div class="form-group col-4">
+                    <label asp-for="@Model.County"></label>
+                    <input asp-for="@Model.County" class="form-control" />
+                    <span asp-validation-for="@Model.County"></span>
+                </div>
+                <div class="form-group col-4">
+                    <label asp-for="@Model.Country"></label>
+                    <input asp-for="@Model.Country" class="form-control" />
+                    <span asp-validation-for="@Model.Country"></span>
+                </div>
+                <div class="form-group col-4">
+                    <label asp-for="@Model.Postcode"></label>
+                    <input asp-for="@Model.Postcode" class="form-control" />
+                    <span asp-validation-for="@Model.Postcode"></span>
+                </div>
+            </div>
         </div>
 
-        <div class="form-group col-sm-4">
-            <label asp-for="@Model.Surname"></label>
-            <input asp-for="@Model.Surname" class="form-control" />
-            <span asp-validation-for="@Model.Surname"></span>
-        </div>
-    </div>
+        <!--SITE-->
+        <div id="site" style="display:none">
+            <!--EMAIL-->
+            <div class="form-group">
+                <label asp-for="@Model.Email"></label>
+                <input asp-for="@Model.Email" class="form-control" />
+                <span asp-validation-for="@Model.Email"></span>
+            </div>
+            <!--PASSWORD-->
+            <div class="form-group">
+                <label asp-for="@Model.Password"></label>
+                <input asp-for="@Model.Password" class="form-control" />
+                <span asp-validation-for="@Model.Password"></span>
+            </div>
 
-    <div class="form-group">
-        <label asp-for="@Model.PhoneNumber">Phone Number</label>
-        <input asp-for="@Model.PhoneNumber" class="form-control" />
-        <span asp-validation-for="@Model.PhoneNumber"></span>
-    </div>
+            <div class="form-group">
+                <label></label>
+                <input type="checkbox" asp-for="@Model.IsNewsletterSubscriber" />
+                <label class="form-check-label" asp-for="@Model.IsNewsletterSubscriber"></label>
+            </div>
 
-    <div class="row">
-        <div class="form-group col-sm-4">
-            <label asp-for="@Model.AddressLine1">Address Line 1</label>
-            <input asp-for="@Model.AddressLine1" class="form-control" />
-            <span asp-validation-for="@Model.AddressLine1"></span>
-        </div>
-
-        <div class="form-group col-sm-4">
-            <label asp-for="@Model.AddressLine2">Address Line 2</label>
-            <input asp-for="@Model.AddressLine2" class="form-control" />
-            <span asp-validation-for="@Model.AddressLine2"></span>
-        </div>
-
-        <div class="form-group col-sm-4">
-            <label asp-for="@Model.AddressLine3">Address Line 3</label>
-            <input asp-for="@Model.AddressLine3" class="form-control" />
-            <span asp-validation-for="@Model.AddressLine3"></span>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="@Model.County"></label>
-        <input asp-for="@Model.County" class="form-control" />
-        <span asp-validation-for="@Model.County"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="@Model.Country"></label>
-        <input asp-for="@Model.Country" class="form-control" />
-        <span asp-validation-for="@Model.Country"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="@Model.Postcode"></label>
-        <input asp-for="@Model.Postcode" class="form-control" />
-        <span asp-validation-for="@Model.Postcode"></span>
-    </div>
-
-    <div class="row">
-        <div class="form-group col-sm-6">
-            <label asp-for="@Model.Email"></label>
-            <input asp-for="@Model.Email" class="form-control" />
-            <span asp-validation-for="@Model.Email"></span>
+            <div class="mt-2 text-center">
+                <p>Already have an account? <a asp-action="Login" asp-controller="Account">Login</a>.</p>
+            </div>
         </div>
 
-        <div class="form-group col-sm-6">
-            <label asp-for="@Model.Password"></label>
-            <input asp-for="@Model.Password" class="form-control" />
-            <span asp-validation-for="@Model.Password"></span>
+        <!--BTN GRP-->
+        <div class="row pr-3" style="float:right">
+            <button style="display:none" id="btn_previous" type="button" onclick="previous();" class="btn btn-primary mr-3">Previous</button>
+            <button id="btn_next" type="button" onclick="next();" class="btn btn-primary pl-3">Next</button>
+            <input id="btn_submit" style="display:none" type="submit" value="Register" class="btn btn-primary" />
         </div>
-    </div>
+    </form>
+</div>
 
-    <div class="form-group">
-        <input type="checkbox" asp-for="@Model.IsNewsletterSubscriber" />
-        <label class="form-check-label" asp-for="@Model.IsNewsletterSubscriber">Recieve our newsletter</label>
-    </div>
+<script type="text/javascript">
+    var details = document.getElementById('details');
+    var adress = document.getElementById('adress');
+    var site = document.getElementById('site');
+    var btn_next = document.getElementById('btn_next');
+    var btn_previous = document.getElementById('btn_previous');
+    var btn_submit = document.getElementById('btn_submit');
 
-    <div class="mt-2">
-        <p>Already have an account? <a asp-action="Login" asp-controller="Account">Login</a>.</p>
-    </div>
-
-    <div>
-        <input type="submit" value="Register" class="btn btn-primary" />
-    </div>
-
-</form>
+    function next() {
+        if (details.style.display != 'none') {
+            details.style.display = 'none';
+            adress.style.display = 'block';
+            btn_previous.style.display = 'block';
+        } else {
+            if (adress.style.display == 'block') {
+                btn_next.style.display = 'none';
+                adress.style.display = 'none';
+                site.style.display = 'block';
+                btn_submit.style.display = 'block';
+            } 
+        }
+    }
+    function previous() {
+        if (site.style.display != 'none') {
+            btn_submit.style.display = 'none';
+            btn_next.style.display = 'block';
+            site.style.display = 'none';
+            adress.style.display = 'block';
+        } else {
+            if (adress.style.display == 'block') {
+                adress.style.display = 'none';
+                details.style.display = 'block';
+                btn_previous.style.display = 'none';
+            }
+        }
+    }
+</script>
