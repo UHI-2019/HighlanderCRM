@@ -27,7 +27,6 @@
                     <input asp-for="@Model.Forename" class="form-control" />
                     <span asp-validation-for="@Model.Forename"></span>
                 </div>
-
                 <div class="form-group col-sm-4">
                     <label asp-for="@Model.Initial"></label>
                     <input asp-for="@Model.Initial" class="form-control" />
@@ -86,7 +85,6 @@
                     <span asp-validation-for="@Model.Postcode"></span>
                 </div>
             </div>
-
         </div>
 
         <!--SITE-->
@@ -131,6 +129,7 @@
     var btn_next = document.getElementById('btn_next');
     var btn_previous = document.getElementById('btn_previous');
     var btn_submit = document.getElementById('btn_submit');
+
     function next() {
         if (details.style.display != 'none') {
             details.style.display = 'none';
@@ -142,7 +141,7 @@
                 adress.style.display = 'none';
                 site.style.display = 'block';
                 btn_submit.style.display = 'block';
-            }
+            } 
         }
     }
     function previous() {
