@@ -18,6 +18,7 @@ using MimeKit;
 using Microsoft.AspNetCore.Http;
 using System;
 using Highlander.Web.Helpers;
+using System.Text;
 
 namespace Highlander.Web.Controllers
 {
@@ -501,6 +502,44 @@ namespace Highlander.Web.Controllers
 
             return RedirectToAction("Staff");
         }
+
+        [HttpGet]
+        [Authorize(Roles = "Staff")]
+        [Route("Account/Manage/CSVMailchimp")]
+        public async Task<FileStreamResult> CSVMailchimp()
+        {
+            IQueryable<ApplicationUser> userList = _context.Users.Where(x => x.IsNewsletterSubscriber == true);
+
+
+            //var memoryStream = new MemoryStream();
+            MemoryStream finalMemory = null;
+            foreach (ApplicationUser testUser in userList)
+            {
+                dynamic displayUser = new ExpandoObject();
+                displayUser.Forename = testUser.Forename;
+                displayUser.Surname = testUser.Surname;
+                displayUser.Email = testUser.Email;
+
+
+                var result = this.WriteCsvToMemory(displayUser);
+                MemoryStream memoryStream = new MemoryStream(result);
+
+                if(finalMemory == null)
+                {
+                    finalMemory = memoryStream;
+                }
+                else
+                {
+                    memoryStream.CopyTo(finalMemory);
+                }
+                
+            }
+
+            //var applicationUser = _context.Users.FirstOrDefault(x => x.Id == user.Id);
+           
+            return new FileStreamResult(finalMemory, "text/csv") { FileDownloadName = "mailchimpexport.csv" };
+        }
+
 
 
         [HttpGet]

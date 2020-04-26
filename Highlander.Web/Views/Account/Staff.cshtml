@@ -63,6 +63,7 @@
                 <input type="submit" value="Invite User" class="btn btn-warning" />
             </div>
         </form>
+
         <h4>Remove Staff</h4>
         <form method="post" asp-controller="Account" asp-action="RemoveStaff">
             <div asp-validation-summary="ModelOnly"></div>
@@ -74,6 +75,9 @@
                 <input type="submit" value="Remove Staff" class="btn btn-danger" />
             </div>
         </form>
+
+        <h4>Download user info for mailchimp</h4>
+        <a asp-controller="Account" asp-action="CSVMailchimp" class="btn btn-primary">Download Mailchimp Data</a>
     </div>
 </div>
 
