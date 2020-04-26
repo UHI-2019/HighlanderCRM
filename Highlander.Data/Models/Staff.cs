@@ -13,5 +13,11 @@ namespace Highlander.Data.Models
         public DateTime? LeaveDate { get; set; }
         public virtual ApplicationUser User { get; set; }
         public virtual EmergencyContact EmergencyContact { get; set; }
+        public Boolean CurrentlyEmployed { get; set; }
+        public Staff()
+        {
+            StartDate = DateTime.Now;
+            CurrentlyEmployed = true;
+        }
     }
 }
