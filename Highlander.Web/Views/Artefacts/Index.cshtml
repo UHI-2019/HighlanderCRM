@@ -3,11 +3,7 @@
     ViewData["Title"] = "Artefacts";
 }
 
-<section class="pt-4">
-    <h1>@ViewBag.Title</h1>
-</section>
-
-<section class="">
+<section>
     @if (!User.IsInRole("Donor"))
     {
         <div class="dropdown">

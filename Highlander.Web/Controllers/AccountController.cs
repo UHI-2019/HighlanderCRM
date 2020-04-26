@@ -21,7 +21,7 @@ using Highlander.Web.Helpers;
 
 namespace Highlander.Web.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         private SignInManager<ApplicationUser> _signManager;
         private UserManager<ApplicationUser> _userManager;
@@ -36,7 +36,8 @@ namespace Highlander.Web.Controllers
             new Title(){ Id = 4, Value = "Ms."}
         };
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signManager, ApplicationDbContext context)
+        public AccountController(UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signManager, ApplicationDbContext context) : base(context)
         {
             _userManager = userManager;
             _signManager = signManager;
@@ -484,6 +485,23 @@ namespace Highlander.Web.Controllers
 
             return View(model);
         }
+
+        [HttpPost]
+        [Authorize(Roles = "Staff")]
+        public async Task<IActionResult> RemoveStaff(IFormCollection collection)
+        {
+            var userID = int.Parse(collection["UserID"].ToString());
+
+            var user = _context.Staff.FirstOrDefault(x => x.UserId == userID);
+            user.LeaveDate = DateTime.Now;
+            user.CurrentlyEmployed = false;
+
+            _context.Staff.Update(user);
+            _context.SaveChanges();
+
+            return RedirectToAction("Staff");
+        }
+
 
         [HttpGet]
         [Authorize]

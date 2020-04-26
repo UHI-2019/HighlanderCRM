@@ -3,14 +3,16 @@ using System;
 using Highlander.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Highlander.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200424085118_AddTableSiteOptionsAndSeed")]
+    partial class AddTableSiteOptionsAndSeed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,43 +49,43 @@ namespace Highlander.Data.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "9ac65463-eb40-4575-a5b0-98e65ba12c34",
+                            ConcurrencyStamp = "78ec9fea-1371-4d94-940c-132846bc0126",
                             Name = "Superuser"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "13c45f09-76c2-4211-9435-ba46e3c2057f",
+                            ConcurrencyStamp = "03923f9c-01c6-4665-9758-8650631db94e",
                             Name = "Administrator"
                         },
                         new
                         {
                             Id = 3,
-                            ConcurrencyStamp = "95ac7221-07c2-402d-b469-806c8ed41caf",
+                            ConcurrencyStamp = "9fc333bc-dad2-4184-8928-461195bc90f7",
                             Name = "Staff"
                         },
                         new
                         {
                             Id = 4,
-                            ConcurrencyStamp = "c87d48f2-b3b3-43fc-92fd-d900e55ea0fb",
+                            ConcurrencyStamp = "b9ae7ac9-f2e7-41b9-80a4-a15d5dbabd78",
                             Name = "Volunteer"
                         },
                         new
                         {
                             Id = 5,
-                            ConcurrencyStamp = "d2bed8e3-e010-4b40-81eb-f5234a944daf",
+                            ConcurrencyStamp = "6bb04ebd-8f48-4b86-ba26-177003292ec1",
                             Name = "Donor"
                         },
                         new
                         {
                             Id = 6,
-                            ConcurrencyStamp = "0c5d1797-9d62-480e-ae7f-7a179b7254b7",
+                            ConcurrencyStamp = "2cbbb102-39a5-4eb8-947d-45479a23293d",
                             Name = "Member"
                         },
                         new
                         {
                             Id = 7,
-                            ConcurrencyStamp = "ab7bd77d-d374-40e2-9f51-aae4427ef020",
+                            ConcurrencyStamp = "786388e5-088d-4038-a156-51e95f19c24f",
                             Name = "Regimental"
                         });
                 });
@@ -525,9 +527,6 @@ namespace Highlander.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Type")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
                     b.Property<string>("Value")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -540,15 +539,7 @@ namespace Highlander.Data.Migrations
                         {
                             Id = 1,
                             Name = "site-name",
-                            Type = "text",
-                            Value = "Highlander"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "primary-colour",
-                            Type = "color",
-                            Value = "#007bff"
+                            Value = "Highlander Museum"
                         });
                 });
 
@@ -557,9 +548,6 @@ namespace Highlander.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    b.Property<bool>("CurrentlyEmployed")
-                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("EmergencyContactId")
                         .HasColumnType("int");
