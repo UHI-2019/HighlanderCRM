@@ -485,6 +485,23 @@ namespace Highlander.Web.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Staff")]
+        public async Task<IActionResult> RemoveStaff(IFormCollection collection)
+        {
+            var userID = int.Parse(collection["UserID"].ToString());
+
+            var user = _context.Staff.FirstOrDefault(x => x.UserId == userID);
+            user.LeaveDate = DateTime.Now;
+            user.CurrentlyEmployed = false;
+
+            _context.Staff.Update(user);
+            _context.SaveChanges();
+
+            return RedirectToAction("Staff");
+        }
+
+
         [HttpGet]
         [Authorize]
         [Route("Account/Manage/Invite/")]

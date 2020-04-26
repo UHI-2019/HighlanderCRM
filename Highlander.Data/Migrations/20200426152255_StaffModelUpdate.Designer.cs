@@ -3,14 +3,16 @@ using System;
 using Highlander.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Highlander.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200426152255_StaffModelUpdate")]
+    partial class StaffModelUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,43 +49,43 @@ namespace Highlander.Data.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "9ac65463-eb40-4575-a5b0-98e65ba12c34",
+                            ConcurrencyStamp = "7ccbb34c-febf-4d4a-a500-7abd576e612a",
                             Name = "Superuser"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "13c45f09-76c2-4211-9435-ba46e3c2057f",
+                            ConcurrencyStamp = "5076d8e0-26dd-4f6d-a499-f01e18ea48df",
                             Name = "Administrator"
                         },
                         new
                         {
                             Id = 3,
-                            ConcurrencyStamp = "95ac7221-07c2-402d-b469-806c8ed41caf",
+                            ConcurrencyStamp = "892ff193-6f94-430f-9be7-8aee03d5251c",
                             Name = "Staff"
                         },
                         new
                         {
                             Id = 4,
-                            ConcurrencyStamp = "c87d48f2-b3b3-43fc-92fd-d900e55ea0fb",
+                            ConcurrencyStamp = "533180d5-07c9-4a86-8283-81c41c84d7d7",
                             Name = "Volunteer"
                         },
                         new
                         {
                             Id = 5,
-                            ConcurrencyStamp = "d2bed8e3-e010-4b40-81eb-f5234a944daf",
+                            ConcurrencyStamp = "2b36b84c-738a-4b94-89d8-333758074c00",
                             Name = "Donor"
                         },
                         new
                         {
                             Id = 6,
-                            ConcurrencyStamp = "0c5d1797-9d62-480e-ae7f-7a179b7254b7",
+                            ConcurrencyStamp = "ffedfc01-b780-451c-b9d6-62dcedd22779",
                             Name = "Member"
                         },
                         new
                         {
                             Id = 7,
-                            ConcurrencyStamp = "ab7bd77d-d374-40e2-9f51-aae4427ef020",
+                            ConcurrencyStamp = "5a20cec8-008a-4ff3-ae17-0961b0f4820a",
                             Name = "Regimental"
                         });
                 });
