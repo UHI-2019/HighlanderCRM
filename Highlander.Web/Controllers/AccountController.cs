@@ -17,6 +17,7 @@ using MailKit.Net.Smtp;
 using MimeKit;
 using Microsoft.AspNetCore.Http;
 using System;
+using Highlander.Web.Helpers;
 
 namespace Highlander.Web.Controllers
 {
@@ -511,8 +512,6 @@ namespace Highlander.Web.Controllers
             // get the hash code from the URL String
             var code = HttpContext.Request.Query["code"].ToString();
 
-            Console.WriteLine(_context.EmailAuths.FirstOrDefault());
-
             //Fetch the correct email object from the EmailAuth table for comparsion
             var EmailAuth = _context.EmailAuths
                 .FirstOrDefault(x => x.Hash == code);
@@ -539,11 +538,7 @@ namespace Highlander.Web.Controllers
             if (existingUserRole == null)
             {
 
-                var model = new InviteViewModel()
-                {
-                    User = user,
-                    RoleId = roleId
-                };
+                var model = new Object();
 
                 var userRole = new ApplicationUserRole()
                 {
@@ -551,15 +546,9 @@ namespace Highlander.Web.Controllers
                     RoleId = roleId
 
                 };
-
+                
                 switch (roleId)
                 {
-                    case 1:
-                    break;
-
-                    case 2:
-                    break;
-
                     case 3:
                         var StaffModel = new Staff()
                         {
@@ -569,6 +558,15 @@ namespace Highlander.Web.Controllers
 
                         };
                         _context.Staff.Add(StaffModel);
+
+                        /*
+                        model = new StaffViewModel()
+                        {
+                            User = user,
+                            RoleId = roleId
+                        };
+                        */
+
                         break;
 
                     case 4:
@@ -578,6 +576,11 @@ namespace Highlander.Web.Controllers
                             UserId = user.Id
                         };
                         _context.Volunteers.Add(VolunteerModel);
+
+                        /*
+                        model = new VolunteerViewModel();
+                        */
+
                         break;
 
                     case 5:
@@ -587,6 +590,14 @@ namespace Highlander.Web.Controllers
                             UserId = user.Id
                         };
                         _context.Donors.Add(DonorModel);
+
+                        /*
+                        model = new InviteViewModel()
+                        {
+                            User = user,
+                            RoleId = roleId
+                        };
+                        */
                         break;
 
                     case 6:
@@ -596,6 +607,13 @@ namespace Highlander.Web.Controllers
                             UserId = user.Id
                         };
                         _context.Members.Add(MemberModel);
+
+                        /*
+                        model = new MemberViewModel()
+                        {
+                            
+                        };
+                        */
                         break;
 
                     case 7:
@@ -604,9 +622,30 @@ namespace Highlander.Web.Controllers
                             Id = 0,
                             UserId = user.Id
                         };
-                        _context.Regimentals.Add(RegimentalModel);                       
+                        _context.Regimentals.Add(RegimentalModel);
+
+                        /*
+                        model = new RegimentalViewModel()
+                        {
+
+                        };
+                        */
+                        break;
+
+                    default:
+                         model = new InviteViewModel()
+                         {
+                             User = user,
+                             RoleId = roleId
+                         };
                         break;
                 }
+
+                model = new InviteViewModel()
+                {
+                    User = user,
+                    RoleId = roleId
+                };
 
 
                 _context.UserRoles.Add(userRole);
@@ -617,35 +656,49 @@ namespace Highlander.Web.Controllers
             return View();
         }
 
-
-        private static Random random = new Random();
-        public static string RandomString(int length)
-        {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(chars, length)
-              .Select(s => s[random.Next(s.Length)]).ToArray());
-        }
-
         [HttpPost]
         [Authorize(Roles = "Staff")]
         public async Task<IActionResult> InviteUserToRole(IFormCollection collection)
         {
-            var roleId = collection["RoleId"].ToString();
+            var rawRole = collection["RoleId"].ToString();
+
+            var roleId = int.Parse(rawRole);
+
+            EmailHelper helper = new EmailHelper();
+
             var user = await _userManager.FindByIdAsync(collection["UserId"]);
-            var hashCode = RandomString(32);
+            var hashCode = helper.RandomString(32);
 
-            int roleIdInt = int.Parse(roleId);
+            var Role = _context.Roles
+              .FirstOrDefault(x => x.Id == roleId);
 
+            
             var EmailAuth = new EmailAuth()
             {
                 Id = 0,
                 Hash = hashCode,
-                RoleId = roleIdInt,
+                RoleId = Role.Id,
                 UserId = user.Id
             };
 
             _context.EmailAuths.Add(EmailAuth);
             _context.SaveChanges();
+
+            //var connectionURL = helper.getEmailServer();
+            //var emailUsername = helper.getEmailUserName();
+            //var emailPassword = helper.getEmailPassword();
+
+            var connectionURL = "smtp.gmail.com";
+            var emailUsername = "mralimac@googlemail.com";
+            var emailPassword = "vlntgyrchikfkhvb";
+            var hostname = "https://localhost:44390";
+
+
+            var emailTemplate = "wwwroot"
+                + Path.DirectorySeparatorChar.ToString()
+                + "Templates"
+                + Path.DirectorySeparatorChar.ToString()
+                + "InviteByEmailTemplate.html";
 
             MimeMessage message = new MimeMessage();
 
@@ -657,18 +710,23 @@ namespace Highlander.Web.Controllers
 
             message.Subject = "You have been invited to a new role!";
 
-            BodyBuilder bodyBuilder = new BodyBuilder();
-            var messageString = "<h1>Hello</h1><p>You've been invited to take on the role of " + collection["RoleName"].ToString() + "</p>";
-            messageString = messageString + "<strong><a href='https://localhost:44390/Account/Manage/Invite?code="+ hashCode +"'>Please click here to accept the role</a></strong>";
-            bodyBuilder.HtmlBody = messageString;
+            var linkURL = hostname + "/Account/Manage/Invite?code=" + hashCode;
 
-            //bodyBuilder.TextBody = "Please click the following link to gain access " + baseURL + ";
+            BodyBuilder bodyBuilder = new BodyBuilder();
+
+            using (StreamReader SourceReader = System.IO.File.OpenText(emailTemplate))
+            {
+                bodyBuilder.HtmlBody = string.Format(SourceReader.ReadToEnd(),
+                    user.Forename,
+                    user.Surname,
+                    Role.Name,
+                    linkURL,
+                    linkURL
+                  );
+            }
+
 
             message.Body = bodyBuilder.ToMessageBody();
-
-            var connectionURL = "smtp.gmail.com";
-            var emailUsername = "mralimac@googlemail.com";
-            var emailPassword = "";
 
             SmtpClient client = new SmtpClient();
             client.Connect(connectionURL, 25, false);
