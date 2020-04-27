@@ -8,8 +8,34 @@
         <div class="jumbotron mt-5">
             <div asp-validation-summary="ModelOnly"></div>
 
+            <!--SITE-->
+            <div id="site">
+                <!--EMAIL-->
+                <div class="form-group">
+                    <label asp-for="@Model.Email"></label>
+                    <input asp-for="@Model.Email" class="form-control" />
+                    <span asp-validation-for="@Model.Email"></span>
+                </div>
+                <!--PASSWORD-->
+                <div class="form-group">
+                    <label asp-for="@Model.Password"></label>
+                    <input asp-for="@Model.Password" class="form-control" />
+                    <span asp-validation-for="@Model.Password"></span>
+                </div>
+
+                <div class="form-group">
+                    <label></label>
+                    <input type="checkbox" asp-for="@Model.IsNewsletterSubscriber" />
+                    <label class="form-check-label" asp-for="@Model.IsNewsletterSubscriber"></label>
+                </div>
+
+                <div class="mt-2 text-center">
+                    <p>Already have an account? <a asp-action="Login" asp-controller="Account">Login</a>.</p>
+                </div>
+            </div>
+
             <!--PERSONALS DETAILS-->
-            <div id="details">
+            <div id="details" style="display:none">
                 <!--TITLE-->
                 <div class="form-group">
                     <label asp-for="TitleId"></label>
@@ -87,31 +113,7 @@
                 </div>
             </div>
 
-            <!--SITE-->
-            <div id="site" style="display:none">
-                <!--EMAIL-->
-                <div class="form-group">
-                    <label asp-for="@Model.Email"></label>
-                    <input asp-for="@Model.Email" class="form-control" />
-                    <span asp-validation-for="@Model.Email"></span>
-                </div>
-                <!--PASSWORD-->
-                <div class="form-group">
-                    <label asp-for="@Model.Password"></label>
-                    <input asp-for="@Model.Password" class="form-control" />
-                    <span asp-validation-for="@Model.Password"></span>
-                </div>
 
-                <div class="form-group">
-                    <label></label>
-                    <input type="checkbox" asp-for="@Model.IsNewsletterSubscriber" />
-                    <label class="form-check-label" asp-for="@Model.IsNewsletterSubscriber"></label>
-                </div>
-
-                <div class="mt-2 text-center">
-                    <p>Already have an account? <a asp-action="Login" asp-controller="Account">Login</a>.</p>
-                </div>
-            </div>
 
             <!--BTN GRP-->
             <div class="row pr-3" style="float:right">
@@ -132,29 +134,29 @@
     var btn_submit = document.getElementById('btn_submit');
 
     function next() {
-        if (details.style.display != 'none') {
-            details.style.display = 'none';
-            adress.style.display = 'block';
+        if (site.style.display != 'none') {
+            site.style.display = 'none';
+            details.style.display = 'block';
             btn_previous.style.display = 'block';
         } else {
-            if (adress.style.display == 'block') {
+            if (details.style.display == 'block') {
                 btn_next.style.display = 'none';
-                adress.style.display = 'none';
-                site.style.display = 'block';
+                details.style.display = 'none';
+                adress.style.display = 'block';
                 btn_submit.style.display = 'block';
             } 
         }
     }
     function previous() {
-        if (site.style.display != 'none') {
+        if (adress.style.display != 'none') {
             btn_submit.style.display = 'none';
             btn_next.style.display = 'block';
-            site.style.display = 'none';
-            adress.style.display = 'block';
+            adress.style.display = 'none';
+            details.style.display = 'block';
         } else {
-            if (adress.style.display == 'block') {
-                adress.style.display = 'none';
-                details.style.display = 'block';
+            if (details.style.display == 'block') {
+                details.style.display = 'none';
+                site.style.display = 'block';
                 btn_previous.style.display = 'none';
             }
         }
