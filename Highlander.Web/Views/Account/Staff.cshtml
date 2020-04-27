@@ -63,7 +63,7 @@
                 <input type="submit" value="Invite User" class="btn btn-warning" />
             </div>
         </form>
-
+        <br />
         <h4>Remove Staff</h4>
         <form method="post" asp-controller="Account" asp-action="RemoveStaff">
             <div asp-validation-summary="ModelOnly"></div>
@@ -75,9 +75,23 @@
                 <input type="submit" value="Remove Staff" class="btn btn-danger" />
             </div>
         </form>
-
-        <h4>Download user info for mailchimp</h4>
+        <br />
+        <h4>Download User Info for Mailchimp</h4>
         <a asp-controller="Account" asp-action="CSVMailchimp" class="btn btn-primary">Download Mailchimp Data</a>
+        <br />
+        <h4>Import Users Via CSV</h4>
+        <form method="post" enctype="multipart/form-data" asp-controller="Account" asp-action="ImportUsers">
+            <div class="form-group">
+                <label asp-for="@Model.CSVFile">CSV File</label>
+                <input type="file" asp-for="@Model.CSVFile" name="CSVFile" class="form-control" />
+            </div>
+            <div>
+                <input type="submit" value="Import Users" class="btn btn-info" />
+            </div>
+        </form>
+        <br />
+        <h4>Download CSV Template</h4>
+        <a asp-controller="Account" asp-action="DownloadCSVTemplate" class="btn btn-info">Download CSV Template</a>
     </div>
 </div>
 
