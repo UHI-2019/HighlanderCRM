@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json.Serialization;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace Highlander.Web.Models
 {
@@ -84,6 +86,7 @@ namespace Highlander.Web.Models
         public IEnumerable<SelectListItem> Roles { get; set; }
         public int RoleId { get; set; }
         public int UserId { get; set; }
+        public IFormFile CSVFile { get; set; }
     }
 
     public class InviteViewModel

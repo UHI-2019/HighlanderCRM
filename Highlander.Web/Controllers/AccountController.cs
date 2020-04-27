@@ -484,7 +484,7 @@ namespace Highlander.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Staff")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RemoveStaff(IFormCollection collection)
         {
             var userID = int.Parse(collection["UserID"].ToString());
@@ -497,6 +497,62 @@ namespace Highlander.Web.Controllers
             _context.SaveChanges();
 
             return RedirectToAction("Staff");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Staff")]
+        public IActionResult ImportUsers(StaffViewModel staffViewModel)
+        {
+            IFormFile file = staffViewModel.CSVFile;
+            var reader = new StreamReader(file.OpenReadStream());
+            int index = 0;
+            while(!reader.EndOfStream)
+            {
+                var line = reader.ReadLine();
+                var data = line.Split(new[] { ',' });
+                if(index != 0)
+                {
+                    var decoId = int.Parse(data[3]);
+                    var user = new ApplicationUser()
+                    {
+                        DecorationId = decoId,
+                        Forename = data[1],
+                        Surname = data[2],
+                        AddressLine1 = data[4],
+                        AddressLine2 = data[5],
+                        AddressLine3 = data[6],
+                        County = data[8],
+                        Postcode = data[7],
+                        Country = data[9],
+                        PhoneNumber = data[10],
+                        Email = data[0],
+                        UserName = data[0],
+                        IsNewsletterSubscriber = false
+                    };
+                    _context.Users.Add(user);
+                }
+                index++;
+            }
+            _context.SaveChanges();
+            return RedirectToAction("Staff");
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Staff")]
+        [Route("Account/Manage/DownloadCSVTemplate")]
+        public IActionResult DownloadCSVTemplate()
+        {
+            var csvTemplate = "wwwroot"
+                + Path.DirectorySeparatorChar.ToString()
+                + "Templates"
+                + Path.DirectorySeparatorChar.ToString()
+                + "template.csv";
+
+            byte[] fileBytes = System.IO.File.ReadAllBytes(csvTemplate);
+
+            return File(fileBytes, "application/force-download", "template.csv");
+
+            //return new FileStreamResult(memoryStream, "text/csv") { FileDownloadName = "export.csv" };
         }
 
         [HttpGet]
