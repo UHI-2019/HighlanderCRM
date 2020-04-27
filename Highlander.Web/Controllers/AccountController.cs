@@ -324,11 +324,7 @@ namespace Highlander.Web.Controllers
             using (var streamWriter = new StreamWriter(memoryStream))
             using (var csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture))
             {
-
-                var records = new List<dynamic>();
-                records.Add(record);
-
-                csvWriter.WriteRecords(records);
+                csvWriter.WriteRecords(record);
 
                 streamWriter.Flush();
                 return memoryStream.ToArray();
@@ -508,39 +504,19 @@ namespace Highlander.Web.Controllers
         [Route("Account/Manage/CSVMailchimp")]
         public async Task<FileStreamResult> CSVMailchimp()
         {
-            IQueryable<ApplicationUser> userList = _context.Users.Where(x => x.IsNewsletterSubscriber == true);
-
-
-            //var memoryStream = new MemoryStream();
-            MemoryStream finalMemory = null;
-            foreach (ApplicationUser testUser in userList)
-            {
-                dynamic displayUser = new ExpandoObject();
-                displayUser.Forename = testUser.Forename;
-                displayUser.Surname = testUser.Surname;
-                displayUser.Email = testUser.Email;
-
-
-                var result = this.WriteCsvToMemory(displayUser);
-                MemoryStream memoryStream = new MemoryStream(result);
-
-                if(finalMemory == null)
+            List<NewsletterSubscriber> newsLettersubscribers = _context.Users
+                .Where(x => x.IsNewsletterSubscriber == true)
+                .Select(x => new NewsletterSubscriber()
                 {
-                    finalMemory = memoryStream;
-                }
-                else
-                {
-                    memoryStream.CopyTo(finalMemory);
-                }
-                
-            }
+                    Email = x.Email,
+                    Forename = x.Forename,
+                    Surname = x.Surname
+                }).ToList();
 
-            //var applicationUser = _context.Users.FirstOrDefault(x => x.Id == user.Id);
-           
-            return new FileStreamResult(finalMemory, "text/csv") { FileDownloadName = "mailchimpexport.csv" };
+            var result = this.WriteCsvToMemory(newsLettersubscribers);
+            var memoryStream = new MemoryStream(result);
+            return new FileStreamResult(memoryStream, "text/csv") { FileDownloadName = "mailchimpexport.csv" };
         }
-
-
 
         [HttpGet]
         [Authorize]
