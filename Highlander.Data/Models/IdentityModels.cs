@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Highlander.Data.Models
@@ -13,8 +14,10 @@ namespace Highlander.Data.Models
     public class ApplicationUser : IdentityUser<int>
     {
         public string Title { get; set; }
+        [Required]
         public string Forename { get; set; }
         public string Initial { get; set; }
+        [Required]
         public string Surname { get; set; }
         public int DecorationId { get; set; }
         public string AddressLine1 { get; set; }
@@ -23,8 +26,17 @@ namespace Highlander.Data.Models
         public string County { get; set; }
         public string Postcode { get; set; }
         public string Country { get; set; }
+        [DataType(DataType.PhoneNumber)]
+        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Not a valid phone number")]
         public string MobileTelNo { get; set; }
+        [DataType(DataType.PhoneNumber)]
+        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Not a valid phone number")]
+        public override string PhoneNumber { get; set; }
+        [EmailAddress]
         public string WorkEmail { get; set; }
+        [Required]
+        [EmailAddress]
+        public override string Email { get; set; }
         public bool IsNewsletterSubscriber { get; set; }
         public virtual Staff Staff { get; set; }
         public virtual Regimental Regimental { get; set; }

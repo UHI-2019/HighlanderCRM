@@ -22,9 +22,12 @@ namespace Highlander.Web.Models
         public string County { get; set; }
         public string Postcode { get; set; }
         public string Country { get; set; }
+        [DataType(DataType.PhoneNumber)]
+        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Not a valid phone number")]
         public string PhoneNumber { get; set; }
         public bool IsNewsletterSubscriber { get; set; }
 
+        [EmailAddress]
         public string Email { get; set; }
 
         [Required, DataType(DataType.Password)]
@@ -45,11 +48,13 @@ namespace Highlander.Web.Models
 
     public class PhoneNumbersViewModel
     {
+        [Phone]
         public ApplicationUser User { get; set; }
     }
 
     public class EmailsViewModel
     {
+        [EmailAddress]
         public ApplicationUser User { get; set; }
     }
 
