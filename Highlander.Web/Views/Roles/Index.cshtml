@@ -3,7 +3,7 @@
     ViewData["Title"] = "Roles";
 }
 
-<section class="pt-4">
+<section>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -27,4 +27,22 @@
     </table>
 </section>
 
-<a href="/Roles/Create" class="btn btn-primary">New Role</a>
+<a href="/Roles/Create" class="btn btn-primary d-inline-block mt-3">New Role</a>
+
+@section Scripts
+{
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("table").DataTable({
+                "columnDefs": [
+                    {
+                        "targets": [2],
+                        "orderable": false
+                    }
+                ]
+            });
+        });
+    </script>
+}
