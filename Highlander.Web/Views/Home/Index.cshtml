@@ -18,6 +18,19 @@
             </div>
         }
 
+        @if (User.IsInRole("Administrator") || User.IsInRole("Staff"))
+        {
+            <div class="card mt-3 p-4 mr-3 col-sm-3 col-12">
+                <a asp-controller="Regiments" asp-action="Index" title="Title">
+                    <div class="card-block">
+                        <h4 class="card-title text-dark ">Regiments</h4>
+                        <p class="card-text text-dark ">Create and edit our partnered Regiments.</p>
+                        <p class="card-text ">
+                    </div>
+                </a>
+            </div>
+        }
+
         <!-- Artefacts -->
         @if (User.IsInRole("Administrator") || User.IsInRole("Staff") || User.IsInRole("Volunteer") || User.IsInRole("Donor"))
         {
