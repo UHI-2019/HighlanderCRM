@@ -1,6 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Amazon;
+using Amazon.Runtime;
+using Amazon.S3;
+using Amazon.S3.Transfer;
 using Highlander.Data;
 using Highlander.Data.Models;
 using Highlander.Web.Helpers;
@@ -142,19 +147,22 @@ namespace Highlander.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(ArtefactsCreateViewModel model)
         {
+            S3Helper S3 = new S3Helper();
+            var file = model.Image;
+
+            var rawFileName = model.Image.FileName;
+            int position = rawFileName.LastIndexOf(".");
+            String fileExt = rawFileName.Substring(position, rawFileName.Length - position);
+            
+            string fileName = "artefact-" + DateTime.Now.ToString("yyyyMMddTHH:mm:ssZ") + fileExt;
+            string imageUrl = S3.UploadFile(model.Image, fileName);
+
+
             try
             {
                 var user = await _userManager.GetUserAsync(this.User);
 
-                string fileName = "artefact-" + DateTime.Now.ToString("yyyyMMddTHH:mm:ssZ");
-
-                // Azure
-                var imageBytes = _fileUploadHelper.ConvertImageToByteArray(model.Image);
-                var imageUrl = await _fileUploadHelper.UploadImageByteArray(
-                        imageBytes,
-                        fileName,
-                        model.Image.ContentType
-                    );
+               
 
                 if (model.Artefact.AccessionNumber == null || model.Artefact.AdlibReference == null)
                 {
@@ -169,6 +177,7 @@ namespace Highlander.Web.Controllers
                 }
                 model.Artefact.ImageUrl = imageUrl;
                 model.Artefact.IsArchived = false;
+                model.Artefact.Filename = fileName;
 
                 _context.Artefacts.Add(model.Artefact);
                 _context.SaveChanges();
@@ -217,6 +226,9 @@ namespace Highlander.Web.Controllers
         [Authorize(Roles = "Administrator, Staff, Volunteer")]
         public async Task<ActionResult> Edit(ArtefactsCreateViewModel model)
         {
+            S3Helper s3 = new S3Helper();
+            s3.DeleteFile(model.Artefact.Filename);
+
             try
             {
                 if (model.Artefact.AccessionNumber != null)
@@ -233,20 +245,12 @@ namespace Highlander.Web.Controllers
 
                 if (model.Image != null)
                 {
-                    var oldImageURL = model.Artefact.ImageUrl;
-                    var fileInfo = new System.IO.FileInfo(oldImageURL);
-                    fileInfo.Delete();
-
                     // change image in storage
                     string fileName = "artefact-" + DateTime.Now.ToString("yyyyMMddTHH:mm:ssZ");
-
-                    var imageBytes = _fileUploadHelper.ConvertImageToByteArray(model.Image);
-                    var imageUrl = await _fileUploadHelper.UploadImageByteArray(
-                            imageBytes,
-                            fileName,
-                            model.Image.ContentType
-                        );
+                    model.Artefact.Filename = fileName;
+                    var imageUrl = s3.UploadFile(model.Image, fileName);
                     model.Artefact.ImageUrl = imageUrl;
+
                 }
 
                 // update last edited by
@@ -270,10 +274,12 @@ namespace Highlander.Web.Controllers
         [Authorize(Roles = "Administrator")]
         public ActionResult Delete(int id)
         {
+            S3Helper s3 = new S3Helper();
             var model = _context.Artefacts.FirstOrDefault(x => x.Id == id);
-            var oldImageURL = model.ImageUrl;
-            var fileInfo = new System.IO.FileInfo(oldImageURL);
-            fileInfo.Delete();
+            var filename = model.Filename;
+
+            s3.DeleteFile(filename);
+
 
             _context.Artefacts.Remove(_context.Artefacts.FirstOrDefault(x => x.Id == id));
             _context.SaveChanges();

@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Highlander.Web.Models;
 using Highlander.Data;
 using Highlander.Data.Models;
+using Amazon.S3;
 
 namespace Highlander.Web
 {

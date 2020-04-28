@@ -10,6 +10,7 @@ namespace Highlander.Data.Models
         public int Id { get; set; }
         public string Description { get; set; }
         public string ImageUrl { get; set; }
+        public string Filename { get; set; }
         public string AccessionNumber { get; set; }
         public DateTime? DateAccessioned { get; set; }
         public string AdlibReference { get; set; }
