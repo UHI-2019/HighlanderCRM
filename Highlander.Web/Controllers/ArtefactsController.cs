@@ -233,6 +233,10 @@ namespace Highlander.Web.Controllers
 
                 if (model.Image != null)
                 {
+                    var oldImageURL = model.Artefact.ImageUrl;
+                    var fileInfo = new System.IO.FileInfo(oldImageURL);
+                    fileInfo.Delete();
+
                     // change image in storage
                     string fileName = "artefact-" + DateTime.Now.ToString("yyyyMMddTHH:mm:ssZ");
 
@@ -266,6 +270,11 @@ namespace Highlander.Web.Controllers
         [Authorize(Roles = "Administrator")]
         public ActionResult Delete(int id)
         {
+            var model = _context.Artefacts.FirstOrDefault(x => x.Id == id);
+            var oldImageURL = model.ImageUrl;
+            var fileInfo = new System.IO.FileInfo(oldImageURL);
+            fileInfo.Delete();
+
             _context.Artefacts.Remove(_context.Artefacts.FirstOrDefault(x => x.Id == id));
             _context.SaveChanges();
             return RedirectToAction(nameof(Index));
