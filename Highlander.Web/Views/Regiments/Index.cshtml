@@ -3,35 +3,53 @@
     ViewBag.Title = "Regiments";
 }
 
-    <section>
-        @if (Model.Regiments.Any())
-        {
-            <table class="table table-striped">
-                <thead>
+<section>
+    @if (Model.Regiments.Any())
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Regiments)
+                {
                     <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Name</th>
-                        <th>&nbsp;</th>
+                        <td>@item.Id</td>
+                        <td>@item.Name</td>
+                        <td class="details-arrow">
+                            <a asp-controller="Regiments" asp-action="Details" asp-route-id="@item.Id"><i class="ion ion-md-arrow-round-forward"></i></a>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.Regiments)
-                    {
-                        <tr>
-                            <td>@item.Id</td>
-                            <td>@item.Name</td>
-                            <td class="details-arrow">
-                                <a asp-controller="Regiments" asp-action="Details" asp-route-id="@item.Id"><i class="ion ion-md-arrow-round-forward"></i></a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
-        else
-        { 
-            <p>No regiments yet.</p>
-        }
-    </section>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No regiments yet.</p>
+    }
+</section>
 
-<a asp-controller="Regiments" asp-action="Create" class="btn btn-primary">Add New Regiment</a>
+<a asp-controller="Regiments" asp-action="Create" class="btn btn-primary d-inline-block mt-3">Add New Regiment</a>
+
+@section Scripts
+{
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("table").DataTable({
+                "columnDefs": [
+                    {
+                        "targets": [2],
+                        "orderable": false
+                    }
+                ]
+            });
+        });
+    </script>
+}

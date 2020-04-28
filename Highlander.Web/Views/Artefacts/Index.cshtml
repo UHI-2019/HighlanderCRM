@@ -4,28 +4,6 @@
 }
 
 <section>
-    @if (!User.IsInRole("Donor"))
-    {
-        <div class="dropdown">
-            <button type="button" class="btn btn-link dropdown-toggle d-block float-right mb-2" data-toggle="dropdown">
-                Key
-            </button>
-            <div class="dropdown-menu">
-                <table class="table" aria-labelledby="dropdownMenuButton">
-                    <tr>
-                        <td class="p-2 table-danger">Not Complete</td>
-                    </tr>
-                    @if (User.IsInRole("Administrator"))
-                    {
-                        <tr>
-                            <td class="p-2 table-active">Archived</td>
-                        </tr>
-                    }
-                </table>
-            </div>
-        </div>
-    }
-
     <table class="table @(User.IsInRole("Donor") ? "table-striped" : "")">
         <thead>
             <tr>
@@ -63,4 +41,22 @@
     </table>
 </section>
 
-<a asp-controller="Artefacts" asp-action="Create" class="btn btn-primary">Log New Artefact</a>
+<a asp-controller="Artefacts" asp-action="Create" class="btn btn-primary d-inline-block mt-3">Log New Artefact</a>
+
+@section Scripts
+{
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("table").DataTable({
+                "columnDefs": [
+                    {
+                        "targets": [4],
+                        "orderable": false
+                    }
+                ]
+            });
+        });
+    </script>
+}
