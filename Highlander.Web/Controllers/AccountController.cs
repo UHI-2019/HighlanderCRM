@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using Highlander.Web.Helpers;
 using System.Text;
+using CsvHelper.Configuration;
 
 namespace Highlander.Web.Controllers
 {
@@ -56,7 +57,7 @@ namespace Highlander.Web.Controllers
                     Text = x.Name
                 }).ToList(),
                 Titles = titles.Select(x => new SelectListItem()
-                { 
+                {
                     Value = x.Id.ToString(),
                     Text = x.Value
                 })
@@ -91,7 +92,7 @@ namespace Highlander.Web.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
-                     // fails here cause there not being created
+                // fails here cause there not being created
                 {
                     await _signManager.SignInAsync(user, false);
                     return RedirectToAction("Index", "Home");
@@ -221,7 +222,7 @@ namespace Highlander.Web.Controllers
 
             user.PhoneNumber = model.User.PhoneNumber;
             user.MobileTelNo = model.User.MobileTelNo;
-            
+
             await _userManager.UpdateAsync(user);
             _context.SaveChanges();
 
@@ -256,61 +257,64 @@ namespace Highlander.Web.Controllers
                     .ThenInclude(volunteer => volunteer.EmergencyContact)
                 .FirstOrDefault(x => x.Id == user.Id);
 
-            // dynamically create a user to be downloaded as a CSV
-            dynamic displayUser = new ExpandoObject();
+            var personalData = new PersonalData()
+            {
+                Title = applicationUser.Title,
+                Forename = applicationUser.Forename,
+                Initial = applicationUser.Initial,
+                Surname = applicationUser.Surname,
+                Decoration = applicationUser.Decoration.Name,
+                AddressLine1 = applicationUser.AddressLine1,
+                AddressLine2 = applicationUser.AddressLine2,
+                AddressLine3 = applicationUser.AddressLine3,
+                County = applicationUser.County,
+                Country = applicationUser.Country,
+                Postcode = applicationUser.Postcode,
+                PhoneNumber = applicationUser.PhoneNumber,
+                MobileTelNo = applicationUser.MobileTelNo,
+                Email = applicationUser.Email,
+                WorkEmail = applicationUser.WorkEmail,
+                SubscribedToNewsLetter = applicationUser.IsNewsletterSubscriber ? "Yes" : "No",
+            };
 
-            displayUser.Title = applicationUser.Title;
-            displayUser.Forename = applicationUser.Forename;
-            displayUser.Initial = applicationUser.Initial;
-            displayUser.Surname = applicationUser.Surname;
-            displayUser.Decoration = applicationUser.Decoration.Name;
-            displayUser.AddressLine1 = applicationUser.AddressLine1;
-            displayUser.AddressLine2 = applicationUser.AddressLine2;
-            displayUser.AddressLine3 = applicationUser.AddressLine3;
-            displayUser.County = applicationUser.County;
-            displayUser.Country = applicationUser.Country;
-            displayUser.Postcode = applicationUser.Postcode;
-            displayUser.PhoneNumber = applicationUser.PhoneNumber;
-            displayUser.MobileTelNo = applicationUser.MobileTelNo;
-            displayUser.Email = applicationUser.Email;
-            displayUser.WorkEmail = applicationUser.WorkEmail;
-            displayUser.SubscribedToNewsLetter = applicationUser.IsNewsletterSubscriber ? "Yes" : "No";
-            
             if (applicationUser.Member != null)
             {
-                displayUser.MemberType = applicationUser.Member.Type;
-                displayUser.MemberNumber = applicationUser.Member.Number;
-                displayUser.MemberStartDate = applicationUser.Member.StartDate;
-                displayUser.MemberExpiryDate = applicationUser.Member.ExpiryDate;
+                personalData.MemberType = applicationUser.Member.Type;
+                personalData.MemberNumber = applicationUser.Member.Number;
+                personalData.MemberStartDate = applicationUser.Member.StartDate;
+                personalData.MemberExpiryDate = applicationUser.Member.ExpiryDate;
             }
 
             if (applicationUser.Staff != null)
             {
-                displayUser.EmergencyContactName = applicationUser.Staff.EmergencyContact.Name;
-                displayUser.EmergencyContactRelation = applicationUser.Staff.EmergencyContact.Relation;
-                displayUser.EmergencyContactTelNo = applicationUser.Staff.EmergencyContact.TelNo;
-                displayUser.StartOfEmployment = applicationUser.Staff.StartDate;
-                displayUser.EndOfEmployment = applicationUser.Staff.LeaveDate;
-            }
-
-            if (applicationUser.Regimental != null)
-            {
-                displayUser.Regiment = applicationUser.Regimental.Regiment.Name;
+                personalData.EmergencyContactName = applicationUser.Staff.EmergencyContact.Name;
+                personalData.EmergencyContactRelation = applicationUser.Staff.EmergencyContact.Relation;
+                personalData.EmergencyContactTelNo = applicationUser.Staff.EmergencyContact.TelNo;
+                personalData.EndOfEmployment = applicationUser.Staff.LeaveDate ?? null;
             }
 
             if (applicationUser.Volunteer != null)
             {
-                // if they are staff this will overwrite the already set EmergencyContact so it wont be repeated
-                // might be worth moving emergency contact from both Staff and Volunteer and having it in User
-                displayUser.EmergencyContactName = applicationUser.Volunteer.EmergencyContact.Name;
-                displayUser.EmergencyContactRelation = applicationUser.Volunteer.EmergencyContact.Relation;
-                displayUser.EmergencyContactTelNo = applicationUser.Volunteer.EmergencyContact.TelNo;
+                // override staff emergency contact
+                personalData.EmergencyContactName = applicationUser.Volunteer.EmergencyContact.Name;
+                personalData.EmergencyContactRelation = applicationUser.Volunteer.EmergencyContact.Relation;
+                personalData.EmergencyContactTelNo = applicationUser.Volunteer.EmergencyContact.TelNo;
 
-                displayUser.Expertise = applicationUser.Volunteer.Expertise.Name;
+                personalData.Expertise = applicationUser.Volunteer.Expertise.Name;
             }
 
+            if (applicationUser.Regimental != null)
+            {
+                personalData.Regiment = applicationUser.Regimental.Regiment.Name;
+            }
+
+            List<PersonalData> list = new List<PersonalData>()
+            {
+                personalData
+            };
+
             // return a csv file of the current users 'user' record and any extra roles
-            var result = this.WriteCsvToMemory(displayUser);
+            var result = this.WriteCsvToMemory(list);
             var memoryStream = new MemoryStream(result);
             return new FileStreamResult(memoryStream, "text/csv") { FileDownloadName = "export.csv" };
         }
@@ -318,7 +322,7 @@ namespace Highlander.Web.Controllers
         /**
          * Move to own helper class? If we need to use it again
          */
-        public byte[] WriteCsvToMemory(dynamic record) 
+        public byte[] WriteCsvToMemory(dynamic record)
         {
             using (var memoryStream = new MemoryStream())
             using (var streamWriter = new StreamWriter(memoryStream))
@@ -472,7 +476,7 @@ namespace Highlander.Web.Controllers
                 {
                     Text = x.UserName,
                     Value = x.Id.ToString()
-                }).ToList(),               
+                }).ToList(),
                 Roles = _context.Roles.Select(x => new SelectListItem()
                 {
                     Text = x.Name,
@@ -506,11 +510,11 @@ namespace Highlander.Web.Controllers
             IFormFile file = staffViewModel.CSVFile;
             var reader = new StreamReader(file.OpenReadStream());
             int index = 0;
-            while(!reader.EndOfStream)
+            while (!reader.EndOfStream)
             {
                 var line = reader.ReadLine();
                 var data = line.Split(new[] { ',' });
-                if(index != 0)
+                if (index != 0)
                 {
                     var decoId = int.Parse(data[3]);
                     var user = new ApplicationUser()
@@ -579,7 +583,7 @@ namespace Highlander.Web.Controllers
         [Route("Account/Manage/Invite/")]
         public async Task<IActionResult> Invite()
         {
-           
+
             // get the hash code from the URL String
             var code = HttpContext.Request.Query["code"].ToString();
 
@@ -587,7 +591,7 @@ namespace Highlander.Web.Controllers
             var EmailAuth = _context.EmailAuths
                 .FirstOrDefault(x => x.Hash == code);
 
-            if(EmailAuth == null)
+            if (EmailAuth == null)
             {
                 return View();
             }
@@ -617,7 +621,7 @@ namespace Highlander.Web.Controllers
                     RoleId = roleId
 
                 };
-                
+
                 switch (roleId)
                 {
                     case 3:
@@ -704,11 +708,11 @@ namespace Highlander.Web.Controllers
                         break;
 
                     default:
-                         model = new InviteViewModel()
-                         {
-                             User = user,
-                             RoleId = roleId
-                         };
+                        model = new InviteViewModel()
+                        {
+                            User = user,
+                            RoleId = roleId
+                        };
                         break;
                 }
 
@@ -723,7 +727,7 @@ namespace Highlander.Web.Controllers
                 _context.SaveChanges();
                 return View(model);
             }
-            
+
             return View();
         }
 
@@ -743,7 +747,7 @@ namespace Highlander.Web.Controllers
             var Role = _context.Roles
               .FirstOrDefault(x => x.Id == roleId);
 
-            
+
             var EmailAuth = new EmailAuth()
             {
                 Id = 0,
@@ -815,7 +819,7 @@ namespace Highlander.Web.Controllers
         public IActionResult UpdateStaff(StaffViewModel model)
         {
             var staff = _context.Staff.Include(x => x.EmergencyContact).FirstOrDefault(x => x.UserId == model.User.Id);
-            
+
             // update emergency contact
             staff.EmergencyContact.Name = model.EmergencyContact.Name;
             staff.EmergencyContact.Relation = model.EmergencyContact.Relation;
