@@ -1,0 +1,25 @@
+﻿@model Regiment
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<section>
+    <dl>
+        <dt>Id</dt>
+        <dd>@Model.Id</dd>
+
+        <dt>Name</dt>
+        <dd>@Model.Name</dd>
+    </dl>
+</section>
+
+<a asp-controller="Regiments" asp-action="Edit" class="btn btn-primary" asp-route-id="@Model.Id">Edit</a>
+
+<form method="post" asp-controller="Regiments" asp-action="Delete" style="display: inline-block" asp-route-id="@Model.Id">
+    <input type="submit" class="btn btn-danger" value="Delete" />
+</form>
+
+<div class="mt-4">
+    <a asp-action="Index">Back to List</a>
+</div>
