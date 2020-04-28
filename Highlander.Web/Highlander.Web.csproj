@@ -7,6 +7,8 @@
 
 
   <ItemGroup>
+    <PackageReference Include="AWSSDK.Extensions.NETCORE.Setup" Version="3.3.101" />
+    <PackageReference Include="AWSSDK.S3" Version="3.3.110.58" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.4.1" />
     <PackageReference Include="CsvHelper" Version="15.0.0" />
     <PackageReference Include="MailKit" Version="2.5.1" />
