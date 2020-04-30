@@ -102,10 +102,25 @@ namespace Highlander.Web.Controllers
                     foreach (var error in result.Errors)
                     {
                         ModelState.AddModelError("", error.Description);
+                        model = new RegisterAccountViewModel()
+                        {
+                            Decorations = _context.Decorations.Select(x => new SelectListItem()
+                            {
+                                Value = x.Id.ToString(),
+                                Text = x.Name
+                            }).ToList(),
+                            Titles = titles.Select(x => new SelectListItem()
+                            {
+                                Value = x.Id.ToString(),
+                                Text = x.Value
+                            })
+                        };
                     }
                 }
             }
-            return View();
+            var errors = ModelState.Where(x => x.Value.Errors.Any())
+                .Select(x => new { x.Key, x.Value.Errors });
+            return View(model);
         }
 
         [HttpGet]
