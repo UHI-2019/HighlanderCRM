@@ -1,23 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Amazon;
 using Amazon.S3;
 using Amazon.S3.Transfer;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-
 namespace Highlander.Web.Helpers
 {
     public class S3Helper
     {
-        private readonly string accessKeyID = "";
-        private readonly string secretKey = "";
-        private readonly string bucketName = "highlandermuseumcrm";
 
-        public string UploadFile(IFormFile file, string filename = "PickFileNameFromSelf")
+        private readonly string accessKeyID = Credential.AmazonS3AccessKeyID;
+        private readonly string secretKey = Credential.AmazonS3Secret;
+        private readonly string bucketName = Credential.AmazonBucket;
+
+        public Boolean UploadFile(IFormFile file, string filename = "PickFileNameFromSelf")
         {
             if(filename == "PickFileNameFromSelf")
             {
@@ -43,7 +39,7 @@ namespace Highlander.Web.Helpers
                     
                 }
             }
-            return GetFilePath(filename);
+            return true;
         }
 
         public string GetFilePath(string filename)
@@ -51,7 +47,6 @@ namespace Highlander.Web.Helpers
             var URL = "https://highlandermuseumcrm.s3.eu-west-2.amazonaws.com/"+filename;
             return URL;
         }
-
 
         public Boolean DeleteFile(string filename)
         {

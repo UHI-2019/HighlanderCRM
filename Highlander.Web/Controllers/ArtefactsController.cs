@@ -153,11 +153,11 @@ namespace Highlander.Web.Controllers
             var rawFileName = model.Image.FileName;
             int position = rawFileName.LastIndexOf(".");
             String fileExt = rawFileName.Substring(position, rawFileName.Length - position);
-            
+
+
             string fileName = "artefact-" + DateTime.Now.ToString("yyyyMMddTHH:mm:ssZ") + fileExt;
-            string imageUrl = S3.UploadFile(model.Image, fileName);
-
-
+           
+            string imageUrl = S3.GetFilePath(fileName);
             try
             {
                 var user = await _userManager.GetUserAsync(this.User);
@@ -200,7 +200,7 @@ namespace Highlander.Web.Controllers
 
                 _context.DonorArtefacts.Add(donorArtefact);
                 _context.SaveChanges();
-
+                S3.UploadFile(model.Image, fileName);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -248,9 +248,9 @@ namespace Highlander.Web.Controllers
                     // change image in storage
                     string fileName = "artefact-" + DateTime.Now.ToString("yyyyMMddTHH:mm:ssZ");
                     model.Artefact.Filename = fileName;
-                    var imageUrl = s3.UploadFile(model.Image, fileName);
+                    var imageUrl = s3.GetFilePath(fileName);
                     model.Artefact.ImageUrl = imageUrl;
-
+                    s3.UploadFile(model.Image, fileName);
                 }
 
                 // update last edited by
@@ -259,7 +259,7 @@ namespace Highlander.Web.Controllers
 
                 _context.Artefacts.Update(model.Artefact);
                 _context.SaveChanges();
-
+                
                 return RedirectToAction(nameof(Index));
             }
             catch

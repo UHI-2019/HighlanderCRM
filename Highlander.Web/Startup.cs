@@ -1,28 +1,28 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Highlander.Web.Models;
 using Highlander.Data;
 using Highlander.Data.Models;
-using Amazon.S3;
+using Highlander.Web.Helpers;
 
 namespace Highlander.Web
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            Credential.AmazonS3AccessKeyID = Configuration.GetConnectionString("AmazonS3AccessKeyID");
+            Credential.AmazonS3Secret = Configuration.GetConnectionString("AmazonS3Secret");
+            Credential.AmazonBucket = Configuration.GetConnectionString("AmazonBucket");
+            Credential.EmailServer = Configuration.GetConnectionString("EmailServer");
+            Credential.EmailUsername = Configuration.GetConnectionString("EmailUsername");
+            Credential.EmailPassword = Configuration.GetConnectionString("EmailPassword");
+            Credential.Hostname = Configuration.GetConnectionString("Hostname");
         } 
 
         public IConfiguration Configuration { get; }

@@ -8,36 +8,26 @@ namespace Highlander.Web.Helpers
 {
     public class EmailHelper
     {
-        private string _connectionString;
-        private static Random random = new Random();
-        IConfiguration configuration;
+        private static readonly Random random = new Random();
 
         public string getHostname()
         {
-            _connectionString = configuration.GetConnectionString("Hostname");
-
-            return _connectionString;
+            return Credential.Hostname;
         }
 
         public string getEmailServer()
         {
-            _connectionString = configuration.GetConnectionString("EmailServer");
-
-            return _connectionString;
+            return Credential.EmailServer;
         }
 
         public string getEmailUserName()
         {
-            _connectionString = configuration.GetConnectionString("EmailUsername");
-
-            return _connectionString;
+            return Credential.EmailUsername;
         }
 
         public string getEmailPassword()
         {
-            _connectionString = configuration.GetConnectionString("EmailPassword");
-
-            return _connectionString;
+            return Credential.EmailPassword;
         }
 
         public string RandomString(int length)
