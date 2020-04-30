@@ -12,36 +12,36 @@
         <div id="details">
             <!--TITLE-->
             <div class="form-group">
-                <label asp-for="TitleId"></label>
+                <label asp-for="TitleId">Titles</label>
                 <select asp-for="TitleId" asp-items="@Model.Titles" class="form-control"></select>
             </div>
             <!--DECORATION-->
             <div class="form-group">
-                <label asp-for="DecorationId"></label>
+                <label asp-for="DecorationId">Decoration</label>
                 <select asp-for="DecorationId" asp-items="@Model.Decorations" class="form-control"></select>
             </div>
             <!--FORENAME | INITIAL | SURNAME-->
             <div class="row">
                 <div class="form-group col-sm-4">
-                    <label asp-for="@Model.Forename"></label>
+                    <label asp-for="@Model.Forename">Forename</label>
                     <input asp-for="@Model.Forename" class="form-control" />
                     <span asp-validation-for="@Model.Forename"></span>
                 </div>
                 <div class="form-group col-sm-4">
-                    <label asp-for="@Model.Initial"></label>
+                    <label asp-for="@Model.Initial">Initial</label>
                     <input asp-for="@Model.Initial" class="form-control" />
                     <span asp-validation-for="@Model.Initial"></span>
                 </div>
 
                 <div class="form-group col-sm-4">
-                    <label asp-for="@Model.Surname"></label>
+                    <label asp-for="@Model.Surname">Surname</label>
                     <input asp-for="@Model.Surname" class="form-control" />
                     <span asp-validation-for="@Model.Surname"></span>
                 </div>
             </div>
             <!--PHONENUMBER-->
             <div class="form-group">
-                <label asp-for="@Model.PhoneNumber"></label>
+                <label asp-for="@Model.PhoneNumber">Phone Number</label>
                 <input asp-for="@Model.PhoneNumber" class="form-control" />
                 <span asp-validation-for="@Model.PhoneNumber"></span>
             </div>
@@ -51,36 +51,36 @@
         <div id="adress" style="display:none">
             <!--ADRESS 1-->
             <div class="form-group">
-                <label asp-for="@Model.AddressLine1"></label>
+                <label asp-for="@Model.AddressLine1">House Number</label>
                 <input asp-for="@Model.AddressLine1" class="form-control" />
                 <span asp-validation-for="@Model.AddressLine1"></span>
             </div>
             <!--ADRESS 2-->
             <div class="form-group">
-                <label asp-for="@Model.AddressLine2"></label>
+                <label asp-for="@Model.AddressLine2">Street Name</label>
                 <input asp-for="@Model.AddressLine2" class="form-control" />
                 <span asp-validation-for="@Model.AddressLine2"></span>
             </div>
             <!--ADRESS 3-->
             <div class="form-group">
-                <label asp-for="@Model.AddressLine3"></label>
+                <label asp-for="@Model.AddressLine3">City</label>
                 <input asp-for="@Model.AddressLine3" class="form-control" />
                 <span asp-validation-for="@Model.AddressLine3"></span>
             </div>
             <!--COUNTY | COUNTRY | POSTCODE-->
             <div class="row">
                 <div class="form-group col-4">
-                    <label asp-for="@Model.County"></label>
+                    <label asp-for="@Model.County">County</label>
                     <input asp-for="@Model.County" class="form-control" />
                     <span asp-validation-for="@Model.County"></span>
                 </div>
                 <div class="form-group col-4">
-                    <label asp-for="@Model.Country"></label>
+                    <label asp-for="@Model.Country">Country</label>
                     <input asp-for="@Model.Country" class="form-control" />
                     <span asp-validation-for="@Model.Country"></span>
                 </div>
                 <div class="form-group col-4">
-                    <label asp-for="@Model.Postcode"></label>
+                    <label asp-for="@Model.Postcode">Postcode</label>
                     <input asp-for="@Model.Postcode" class="form-control" />
                     <span asp-validation-for="@Model.Postcode"></span>
                 </div>
@@ -91,21 +91,21 @@
         <div id="site" style="display:none">
             <!--EMAIL-->
             <div class="form-group">
-                <label asp-for="@Model.Email"></label>
+                <label asp-for="@Model.Email">Email</label>
                 <input asp-for="@Model.Email" class="form-control" />
                 <span asp-validation-for="@Model.Email"></span>
             </div>
             <!--PASSWORD-->
             <div class="form-group">
-                <label asp-for="@Model.Password"></label>
-                <input asp-for="@Model.Password" class="form-control" />
+                <label asp-for="@Model.Password">Password</label>
+                <input asp-for="@Model.Password" type="password" autocomplete="off" class="form-control" />
                 <span asp-validation-for="@Model.Password"></span>
             </div>
 
             <div class="form-group">
                 <label></label>
                 <input type="checkbox" asp-for="@Model.IsNewsletterSubscriber" />
-                <label class="form-check-label" asp-for="@Model.IsNewsletterSubscriber"></label>
+                <label class="form-check-label" asp-for="@Model.IsNewsletterSubscriber">I wish to subscribe to the Newsletter</label>
             </div>
 
             <div class="mt-2 text-center">
