@@ -48,37 +48,6 @@
             </div>
         </form>
         <br />
-        <h4>Invite user to role</h4>
-        <form method="post" asp-controller="Account" asp-action="InviteUserToRole">
-            <div asp-validation-summary="ModelOnly"></div>
-            <div class="form-group">
-                <label asp-for="UserId">User</label>
-                <select asp-for="UserId" asp-items="@Model.Users" class="form-control"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="RoleId">Role</label>
-                <select asp-for="RoleId" asp-items="@Model.Roles" class="form-control"></select>
-            </div>
-            <div>
-                <input type="submit" value="Invite User" class="btn btn-warning" />
-            </div>
-        </form>
-        <br />
-        <h4>Remove Staff</h4>
-        <form method="post" asp-controller="Account" asp-action="RemoveStaff">
-            <div asp-validation-summary="ModelOnly"></div>
-            <div class="form-group">
-                <label asp-for="UserId">User</label>
-                <select asp-for="UserId" asp-items="@Model.Users" class="form-control"></select>
-            </div>
-            <div>
-                <input type="submit" value="Remove Staff" class="btn btn-danger" />
-            </div>
-        </form>
-        <br />
-        <h4>Download User Info for Mailchimp</h4>
-        <a asp-controller="Account" asp-action="CSVMailchimp" class="btn btn-primary">Download Mailchimp Data</a>
-        <br />
         <h4>Import Users Via CSV</h4>
         <form method="post" enctype="multipart/form-data" asp-controller="Account" asp-action="ImportUsers">
             <div class="form-group">

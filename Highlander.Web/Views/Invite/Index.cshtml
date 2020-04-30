@@ -1,0 +1,17 @@
+﻿@model InviteIndexViewModel
+
+<h4>Invite user to role</h4>
+<form method="post" asp-controller="Invite" asp-action="Index">
+    <div asp-validation-summary="ModelOnly"></div>
+    <div class="form-group">
+        <label asp-for="UserId">User</label>
+        <select asp-for="UserId" asp-items="@Model.Users" class="form-control"></select>
+    </div>
+    <div class="form-group">
+        <label asp-for="RoleId">Role</label>
+        <select asp-for="RoleId" asp-items="@Model.Roles" class="form-control"></select>
+    </div>
+    <div>
+        <input type="submit" value="Invite User" class="btn btn-warning" />
+    </div>
+</form>
