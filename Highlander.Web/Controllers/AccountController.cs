@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,8 +16,6 @@ using MimeKit;
 using Microsoft.AspNetCore.Http;
 using System;
 using Highlander.Web.Helpers;
-using System.Text;
-using CsvHelper.Configuration;
 
 namespace Highlander.Web.Controllers
 {
@@ -552,8 +548,6 @@ namespace Highlander.Web.Controllers
             byte[] fileBytes = System.IO.File.ReadAllBytes(csvTemplate);
 
             return File(fileBytes, "application/force-download", "template.csv");
-
-            //return new FileStreamResult(memoryStream, "text/csv") { FileDownloadName = "export.csv" };
         }
 
         [HttpGet]
@@ -575,7 +569,6 @@ namespace Highlander.Web.Controllers
 
             var roleId = EmailAuth.RoleId;
             var userId = EmailAuth.UserId;
-
 
             var user = _context.Users
                 .FirstOrDefault(x => x.Id == userId);
@@ -696,89 +689,6 @@ namespace Highlander.Web.Controllers
                 return View(model);
             }
             return View();
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "Staff")]
-        public async Task<IActionResult> InviteUserToRole(IFormCollection collection)
-        {
-            var rawRole = collection["RoleId"].ToString();
-
-            var roleId = int.Parse(rawRole);
-
-            EmailHelper helper = new EmailHelper();
-
-            var user = await _userManager.FindByIdAsync(collection["UserId"]);
-            var hashCode = helper.RandomString(32);
-
-            var Role = _context.Roles
-              .FirstOrDefault(x => x.Id == roleId);
-
-
-            var EmailAuth = new EmailAuth()
-            {
-                Id = 0,
-                Hash = hashCode,
-                RoleId = Role.Id,
-                UserId = user.Id
-            };
-
-            _context.EmailAuths.Add(EmailAuth);
-            _context.SaveChanges();
-
-            //var connectionURL = helper.getEmailServer();
-            //var emailUsername = helper.getEmailUserName();
-            //var emailPassword = helper.getEmailPassword();
-
-            var connectionURL = "smtp.gmail.com";
-            var emailUsername = "mralimac@googlemail.com";
-            var emailPassword = "vlntgyrchikfkhvb";
-            var hostname = "https://localhost:44390";
-
-
-            var emailTemplate = "wwwroot"
-                + Path.DirectorySeparatorChar.ToString()
-                + "Templates"
-                + Path.DirectorySeparatorChar.ToString()
-                + "InviteByEmailTemplate.html";
-
-            MimeMessage message = new MimeMessage();
-
-            MailboxAddress from = new MailboxAddress("Highlander Museum", "noreply@thehighlandersmuseum.com");
-            message.From.Add(from);
-
-            MailboxAddress to = new MailboxAddress(user.Forename + " " + user.Surname, user.Email);
-            message.To.Add(to);
-
-            message.Subject = "You have been invited to a new role!";
-
-            var linkURL = hostname + "/Account/Manage/Invite?code=" + hashCode;
-
-            BodyBuilder bodyBuilder = new BodyBuilder();
-
-            using (StreamReader SourceReader = System.IO.File.OpenText(emailTemplate))
-            {
-                bodyBuilder.HtmlBody = string.Format(SourceReader.ReadToEnd(),
-                    user.Forename,
-                    user.Surname,
-                    Role.Name,
-                    linkURL,
-                    linkURL
-                  );
-            }
-
-
-            message.Body = bodyBuilder.ToMessageBody();
-
-            SmtpClient client = new SmtpClient();
-            client.Connect(connectionURL, 25, false);
-            client.Authenticate(emailUsername, emailPassword);
-            //client.Authenticate("insert gmail email", "insert gmail password");
-            client.Send(message);
-            client.Disconnect(true);
-            client.Dispose();
-
-            return RedirectToAction("Staff");
         }
 
         [HttpPost]
