@@ -92,7 +92,6 @@ namespace Highlander.Web.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
-                // fails here cause there not being created
                 {
                     await _signManager.SignInAsync(user, false);
                     return RedirectToAction("Index", "Home");
@@ -328,26 +327,9 @@ namespace Highlander.Web.Controllers
                 personalData
             };
 
-            // return a csv file of the current users 'user' record and any extra roles
-            var result = this.WriteCsvToMemory(list);
+            var result = CsvUtilities.WriteCsvToMemory(list);
             var memoryStream = new MemoryStream(result);
             return new FileStreamResult(memoryStream, "text/csv") { FileDownloadName = "export.csv" };
-        }
-
-        /**
-         * Move to own helper class? If we need to use it again
-         */
-        public byte[] WriteCsvToMemory(dynamic record)
-        {
-            using (var memoryStream = new MemoryStream())
-            using (var streamWriter = new StreamWriter(memoryStream))
-            using (var csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture))
-            {
-                csvWriter.WriteRecords(record);
-
-                streamWriter.Flush();
-                return memoryStream.ToArray();
-            }
         }
 
         [HttpGet]
@@ -503,7 +485,7 @@ namespace Highlander.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> RemoveStaff(IFormCollection collection)
         {
             var userID = int.Parse(collection["UserID"].ToString());
@@ -575,30 +557,10 @@ namespace Highlander.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Staff")]
-        [Route("Account/Manage/CSVMailchimp")]
-        public async Task<FileStreamResult> CSVMailchimp()
-        {
-            List<NewsletterSubscriber> newsLettersubscribers = _context.Users
-                .Where(x => x.IsNewsletterSubscriber == true)
-                .Select(x => new NewsletterSubscriber()
-                {
-                    Email = x.Email,
-                    Forename = x.Forename,
-                    Surname = x.Surname
-                }).ToList();
-
-            var result = this.WriteCsvToMemory(newsLettersubscribers);
-            var memoryStream = new MemoryStream(result);
-            return new FileStreamResult(memoryStream, "text/csv") { FileDownloadName = "mailchimpexport.csv" };
-        }
-
-        [HttpGet]
         [Authorize]
         [Route("Account/Manage/Invite/")]
         public async Task<IActionResult> Invite()
         {
-
             // get the hash code from the URL String
             var code = HttpContext.Request.Query["code"].ToString();
 
@@ -622,12 +584,10 @@ namespace Highlander.Web.Controllers
             var existingUserRole = _context.UserRoles
                 .FirstOrDefault(x => x.UserId == user.Id && x.RoleId == roleId);
 
-
             _context.EmailAuths.Remove(EmailAuth);
 
             if (existingUserRole == null)
             {
-
                 var model = new Object();
 
                 var userRole = new ApplicationUserRole()
@@ -658,7 +618,6 @@ namespace Highlander.Web.Controllers
                         */
 
                         break;
-
                     case 4:
                         var VolunteerModel = new Volunteer()
                         {
@@ -672,7 +631,6 @@ namespace Highlander.Web.Controllers
                         */
 
                         break;
-
                     case 5:
                         var DonorModel = new Donor()
                         {
@@ -689,7 +647,6 @@ namespace Highlander.Web.Controllers
                         };
                         */
                         break;
-
                     case 6:
                         var MemberModel = new Member()
                         {
@@ -705,7 +662,6 @@ namespace Highlander.Web.Controllers
                         };
                         */
                         break;
-
                     case 7:
                         var RegimentalModel = new Regimental()
                         {
@@ -721,7 +677,6 @@ namespace Highlander.Web.Controllers
                         };
                         */
                         break;
-
                     default:
                         model = new InviteViewModel()
                         {
@@ -730,19 +685,16 @@ namespace Highlander.Web.Controllers
                         };
                         break;
                 }
-
                 model = new InviteViewModel()
                 {
                     User = user,
                     RoleId = roleId
                 };
 
-
                 _context.UserRoles.Add(userRole);
                 _context.SaveChanges();
                 return View(model);
             }
-
             return View();
         }
 
