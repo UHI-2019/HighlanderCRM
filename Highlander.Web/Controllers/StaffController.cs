@@ -46,7 +46,7 @@ namespace Highlander.Web.Controllers
             _context.Staff.Update(user);
             _context.SaveChanges();
 
-            return RedirectToAction("Staff");
+            return RedirectToAction("Remove");
         }
     }
 }
