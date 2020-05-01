@@ -7,6 +7,8 @@ using Microsoft.Extensions.Hosting;
 using Highlander.Data;
 using Highlander.Data.Models;
 using Highlander.Web.Helpers;
+using System;
+using Microsoft.Win32;
 
 namespace Highlander.Web
 {
@@ -67,7 +69,7 @@ namespace Highlander.Web
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            UpdateDatabase(app);
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -78,6 +80,31 @@ namespace Highlander.Web
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+        }
+
+        private static void UpdateDatabase(IApplicationBuilder app)
+        {
+            using (var serviceScope = app.ApplicationServices
+                .GetRequiredService<IServiceScopeFactory>()
+                .CreateScope())
+            {
+                using (var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
+                {
+                    if (Registry.LocalMachine.OpenSubKey(@"SOFTWARE\MySQL AB") == null)
+                    {
+                        throw new Exception("MySQL is not installed");
+                    }
+
+                    try
+                    {
+                        context.Database.Migrate();
+                    }
+                    catch (MySql.Data.MySqlClient.MySqlException e)
+                    {
+                        throw new Exception("MySQL login details are incorrect, please check appsettings.json");
+                    }
+                }
+            }
         }
     }
 }
